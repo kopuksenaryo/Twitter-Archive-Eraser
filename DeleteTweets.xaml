@@ -88,10 +88,10 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Number of parallel connections: 4 " Grid.Row="2" Margin="0 5 0 0"
+            <GroupBox Header="Number of parallel connections: 8 " Grid.Row="2" Margin="0 5 0 0"
                   Name="grpParallelConnections"
                   ToolTip="For good internet connection speeds, select more parallel connections">
-                <Slider TickPlacement="BottomRight" Value="4"
+                <Slider TickPlacement="BottomRight" Value="8"
                     Name="sliderParallelConnections"
                     ToolTip="Connection Speed" 
                     Maximum="16" Minimum="2" SmallChange="1"
