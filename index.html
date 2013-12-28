@@ -79,7 +79,7 @@
 
 <h1><a name="twitter-archive-eraser" class="anchor" href="#twitter-archive-eraser"><span class="octicon octicon-link"></span></a>Twitter Archive Eraser</h1>
 
-<p>Twitter Archive Eraser allows you delete the oldest tweets from your timeline, or wipe out your whole twitter archive if you would like so.</p>
+<p>Twitter Archive Eraser allows you delete the oldest tweets from your timeline, or erase your whole twitter archive if you would like so.</p>
 <p>The application is the simplest possible, it works in 3 steps: authenticate with Twitter; select which tweets you want to delete; erase them!</p>
 
 <h2>Reviews</h2>
@@ -90,38 +90,67 @@
 <p><blockquote>"Thank you very much! I appreciate this app and your brain. Life saver" <i>—<a href="http://twitter.com/Samalamfamyanan" target="_blank">Rainman</a>.</i></blockquote></p>
 <p><blockquote>"[...] The best Tweet deleter I've used :)" <i>—<a href="http://twitter.com/satchmoi" target="_blank">Satchmo</a>.</i></blockquote></p>
 
-<p><b><font color="red"><center>
-I DO NOT DO support for Twitter Archive Eraser. Please check the FAQ page or ask around in the comments. 
-Don't send email/tweets with "How to uncompress the .zip archive" OR other questions.
-</center></font></b></p>
-
+<<<<<<< HEAD
+<br/>
+=======
+>>>>>>> e6867201132c5145234787131d09d1c2c3261dbf
 <h2>How to use</h2>
 
 <h3>Step 1</h3>
 
-<p>In this step, you give Twitter Archive Eraser access to your twitter account so that it can delete the tweets you select. This works by providing a Pin number that twitter provides after the authentication.</p>
-
+<p>In this step, you give Twitter Archive Eraser access to your twitter account so that it can delete the tweets you select. This works by providing a PIN number that twitter provides after the authentication.
+<br/><i>Note: from version 4.0 on, you need to accept sharing several statistics to use Twitter Archive Eraser.</i></p>
 <p><center>
 	<a href="images/step1.png"><img src="images/step1.png" width="400"/></a>
 </center></p>
 
 <h3>Step 2</h3>
 
-<p>After you download your twitter archive (from <a href="https://twitter.com/settings/account" target="_blank">https://twitter.com/settings/account</a>) and extract it (to <b><i>C:\Twitter_archive</i></b> for example), you choose which tweets from your archive to delete. The tweets in the Twitter archive are grouped by month, ie. all the tweets of a month are stored in the same file.</p>
-
-<p>These files are found in <i><b>[your Twitter archive path]\data\js\tweets</b></i>. For instance, to delete the tweets from September 2009 you choose the file <i><b>2009_09.js</b></i>.</p>
+<p>After you download your twitter archive (from <a href="https://twitter.com/settings/account" target="_blank">https://twitter.com/settings/account</a>) You can load it directly as a zip file into Twitter Archive Eraser (<i>new in version 4.0</i>).<br/>
+You can now select which period of time you want to delete tweets from (grouped by month).</p>
 
 <p><center> <a href="images/step2.png"><img src="images/step2.png" width="400"/></a></center></p>
 
 <h3>Step 3</h3>
 
-<p>Once you have selected the correct files, you are now presented with all the tweets contained in these files. By default, all the tweets are marked for deletion, if you want to keep any specific tweets, just uncheck them as shown in the following picture. </p>
-<p><b>From version 3.0 onwards,</b> you can also filter specific tweets to check/uncheck them (you can click the "Erase?" checkbox on top to check uncheck all the filtered tweets).</p>
-<p>After that you choose the degree of parallelism wanted: this is how many tweets Twitter Archive Eraser deletes at once: the more the better. Notice however that this parameter is limited by your network speed.</p>
+<p>Once you have selected the months, you are now presented with all the tweets in this period of time. By default, all the tweets are marked for deletion, if you want to keep any specific tweets, just uncheck them as shown in the following picture. </p>
+<p><b>From version 4.0 onwards,</b> you can use regular expressions to filter specific tweets to check/uncheck them (you can click the "Erase?" checkbox on top to check uncheck all the filtered tweets).</p>
+<p>You also choose the degree of parallelism you want: that is how many tweets Twitter Archive Eraser <b>deletes at a time</b>: the more the better. Notice however that this parameter is limited by your network speed.</p>
 <p>You can pause/resume the deletion process and check/uncheck tweets in between.</p>
 
 <p><center><a href="images/step3.png"><img src="images/step3.png" width="500"/></a></center></p>
 
+<h3>Common filtering expressions</h3>
+Use the following filtering expressions (without quotes "") to search for:
+<ul>
+	<li>
+        <b>Retweets</b>: "^RT"
+	</li>
+	<li>
+        <b>Replies</b>: "^@\w+"
+	</li>
+	<li>
+        <b>Reply to user martani_net</b>: "^@martani_net"
+	</li>
+	<li>
+        <b>Mentions</b>: "@\w+"
+	</li>
+	<li>
+        <b>Mentions of user martnai_net</b>: "@martani_net" <br/>
+		<i>This will possibly return Retweets also</i>
+	</li>
+	<li>
+        <b>Tweets containing a number with 4 digits or more</b>: "\d{4}"
+	</li>
+	<li>
+        <b>Tweets containing the word 'hello'</b>: "hello"
+	</li>
+</ul>
+
+
+<p><b><font color="red"><center>
+I provide no support for Twitter Archive Eraser. Please check the FAQ page or ask around in the comments. 
+</center></font></b></p>
 
 <hr>
 <h3>Requirements</h3>
@@ -138,8 +167,6 @@ Don't send email/tweets with "How to uncompress the .zip archive" OR other quest
 		<b>Standalone (portable) version:</b> 
 		<center><a href="http://bit.ly/TwitterArchiveEraser"><img src="images/download.png" width="48"/></a></center>
 			This version requires no installation and can be run directly.
-			
-			
 		</p>
 	</li>
 	
@@ -147,7 +174,7 @@ Don't send email/tweets with "How to uncompress the .zip archive" OR other quest
 		<p>
 		<b>Installer version:</b> 
 		<center><a href="http://bit.ly/TwitterArchiveEraserSetup"><img src="images/download.png" width="48"/></a></center>
-			The installer takes care of downloading the required librairies (.NET framework etc.), and installs the application to the start menu.
+			The installer takes care of downloading the required libraries (.NET framework etc.), and installs the application to the start menu.
 		</p>
 	</li>
 </ul>
@@ -156,6 +183,27 @@ Don't send email/tweets with "How to uncompress the .zip archive" OR other quest
 <hr>
 <h3>Updates</h3>
 <ul>
+	<li>
+        <b>Version 4.0</b><br>
+        <p>This is a major update for Twitter Archive Eraser. It adds the following features:</p>
+		<ul>
+			<li>
+			<b>Zip archive loading:</b> you can now load the whole zip archive in one click without needing to add specific *.js files separately.<br/>
+			</li>
+			<li>
+			<b>Automatic errors retry:</b> Twitter Archive Eraser will track any tweets which were not deleted due to network or server side errors
+			and offers to retry deleting them on the fly. You can also save a list of these tweets to delete later.
+			<li>
+			<b>Filtering based on regular expressions:</b> Retweets, mentions etc... You can get all these very easily with Regex based filtering.
+			</li>
+			<li>
+			<b>Different statistical information collecting:</b> starting from version 4.0, you have to agree to sharing some information with Twitter Archive Eraser. This information will be used only for statistics.
+			</li>
+			<li>
+			<b>Licence:</b> Version 4.0 comes with a new licence, You <b>cannot</b> use Twitter Archive Eraser for commercial or monetary purposes. Please take a look at the licence file in case of doubt.
+			</li>
+		</ul>
+    </li>
 	<li>
         <b>Version 3.0</b><br>
         <p>This is a major update for Twitter Archive Eraser. It contains the following features:</p>
