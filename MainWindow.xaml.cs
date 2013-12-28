@@ -1,27 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using System.Configuration;
 
 using LinqToTwitter;
-using System.Diagnostics;
-using System.Net;
-
-using System.Resources;
-using System.IO;
-using System.Reflection;
+using System;
 
 namespace Twitter_Archive_Eraser
 {
@@ -108,6 +91,8 @@ namespace Twitter_Archive_Eraser
         private void btnAuthorize_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
+            chkAcceptToShare.IsEnabled = false;
+
             ITwitterAuthorizer auth = PerformAuthorization();
 
             if (auth == null)
@@ -117,10 +102,13 @@ namespace Twitter_Archive_Eraser
 
             Application.Current.Properties["context"] = ctx;
             Application.Current.Properties["userName"] = ctx.UserName;
+            Application.Current.Properties["sessionGUID"] = Guid.NewGuid().ToString();
 
             userName.Text = "@" + ctx.UserName;
             stackWelcome.Visibility = System.Windows.Visibility.Visible;
             btnAuthorize.IsEnabled = false;
+
+            WebUtils.ReportNewUser(ctx.UserName, (string)Application.Current.Properties["sessionGUID"]);
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
@@ -131,6 +119,24 @@ namespace Twitter_Archive_Eraser
             page.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             page.ShowDialog();
             //Application.Current.Shutdown();
+        }
+
+        private void Hyperlink_RequestNavigate_1(object sender, RequestNavigateEventArgs e)
+        {
+            Information info = new Information();
+            info.ShowDialog();
+        }
+
+        private void AcceptToShare_Click(object sender, RoutedEventArgs e)
+        {
+            if (chkAcceptToShare.IsChecked != null && chkAcceptToShare.IsChecked == true)
+            {
+                btnAuthorize.IsEnabled = true;
+            }
+            else
+            {
+                btnAuthorize.IsEnabled = false;
+            }
         }
     }
 }

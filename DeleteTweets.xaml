@@ -3,157 +3,178 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Delete Tweets" MinHeight="630" Height="687" MinWidth="1000" Width="1000" Closing="Window_Closing_1"
         >
-   
-        <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="95"/>
-            <RowDefinition Height="45"/>
-            <RowDefinition Height="55"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <Grid Margin="10" Name="gridContainer">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="95"/>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="55"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="3" Name="gridTweets" 
+            <DataGrid Grid.Row="3" Name="gridTweets" 
                   AutoGenerateColumns="False" 
                   CanUserResizeColumns="True"
                   IsReadOnly="True"
                   CanUserSortColumns="False"
                   Margin="0 10 0 0">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Status" Width="100" IsReadOnly="True" Binding="{Binding Status}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style>
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Status" Width="100" IsReadOnly="True" Binding="{Binding Status}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.Header>
-                        <StackPanel>
-                            <TextBlock HorizontalAlignment="Center">Erase?</TextBlock>
-                            <CheckBox HorizontalAlignment="Center" 
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.Header>
+                            <StackPanel>
+                                <TextBlock HorizontalAlignment="Center">Erase?</TextBlock>
+                                <CheckBox HorizontalAlignment="Center" 
                                       Checked="SelectAllCheckBox_Checked" 
                                       Unchecked="SelectAllCheckBox_UnChecked"
                                       IsChecked="True"></CheckBox>
-                        </StackPanel>
-                    </DataGridTemplateColumn.Header>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding Path=ToErase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    
-                </DataGridTemplateColumn>
-                
-                <DataGridHyperlinkColumn Header="Tweet ID" Binding="{Binding ID}" Width="120">
-                    <DataGridHyperlinkColumn.ElementStyle>
-                        <Style>
-                            <EventSetter Event="Hyperlink.Click" Handler="DG_Hyperlink_Click"/>
-                            <Setter Property="FrameworkElement.Width" Value="120"/>
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridHyperlinkColumn.ElementStyle>
-                </DataGridHyperlinkColumn>
-                <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="140">
-                    <DataGridTextColumn.CellStyle>
-                        <Style>
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
-                            <Setter Property="FrameworkElement.Width" Value="140"/>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Tweet" Binding="{Binding Text}" Width="*"/>
-            </DataGrid.Columns>
+                            </StackPanel>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Path=ToErase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+
+                    </DataGridTemplateColumn>
+
+                    <DataGridHyperlinkColumn Header="Tweet ID" Binding="{Binding ID}" Width="120">
+                        <DataGridHyperlinkColumn.ElementStyle>
+                            <Style>
+                                <EventSetter Event="Hyperlink.Click" Handler="DG_Hyperlink_Click"/>
+                                <Setter Property="FrameworkElement.Width" Value="120"/>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridHyperlinkColumn.ElementStyle>
+                    </DataGridHyperlinkColumn>
+                    <DataGridTextColumn Header="Is Retweet?" Binding="{Binding IsRetweet}" Width="70">
+                        <DataGridTextColumn.CellStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.Width" Value="70"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="140">
+                        <DataGridTextColumn.CellStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FrameworkElement.Width" Value="140"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Tweet" Binding="{Binding Text}" Width="*"/>
+                </DataGrid.Columns>
 
             </DataGrid>
 
-        <GroupBox Header="Filter Tweets" Grid.Row="1" Name="grpFilterTweets">
-            <StackPanel  Orientation="Horizontal">
-                <TextBlock Margin="80 5 0 0"><Run Text="Filter text:"/></TextBlock>
-                <TextBox x:Name="txtFilterTweets" Margin="10 0" Width="175" KeyUp="txtFilterTweets_KeyUp"/>
-                <Button x:Name="btnSearch" Width="127" Margin="20 0" Click="btnSearch_Click" Content="Search"/>
-                <Button x:Name="btnClear" Width="166" Margin="20 0" Click="btnClear_Click" Content="Show all / Reset filter"/>
+            <GroupBox Header="Filter Tweets" Grid.Row="1" Name="grpFilterTweets">
+                <StackPanel  Orientation="Horizontal">
+                    <TextBlock Margin="80 5 0 0"><Run Text="Filter text:"/></TextBlock>
+                    <TextBox x:Name="txtFilterTweets" Margin="10 0" Width="175" KeyUp="txtFilterTweets_KeyUp"/>
+                    <Button x:Name="btnSearch" Width="127" Margin="20 0" Click="btnSearch_Click" Content="Search"/>
+                    <Button x:Name="btnClear" Width="166" Margin="20 0" Click="btnClear_Click" Content="Show all / Reset filter"/>
 
-            </StackPanel>
-        </GroupBox>
+                </StackPanel>
+            </GroupBox>
 
-        <GroupBox Header="Number of parallel connections: 4 " Grid.Row="2" Margin="0 5 0 0"
+            <GroupBox Header="Number of parallel connections: 4 " Grid.Row="2" Margin="0 5 0 0"
                   Name="grpParallelConnections"
                   ToolTip="For good internet connection speeds, select more parallel connections">
-            <Slider TickPlacement="BottomRight" Value="4"
+                <Slider TickPlacement="BottomRight" Value="4"
                     Name="sliderParallelConnections"
                     ToolTip="Connection Speed" 
                     Maximum="16" Minimum="2" SmallChange="1"
                     IsSnapToTickEnabled="True"
                     Margin="20 5 20 0" ValueChanged="sliderParallelConnections_ValueChanged"
                     />
-        </GroupBox>
+            </GroupBox>
 
-        <StackPanel Margin="10 0 0 0">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock FontSize="36" >Step 3</TextBlock>
-                <TextBlock Name="txtTotalTweetsNB" FontSize="15" Margin="10 10" >(Total tweets: 12345)</TextBlock>
-                <Button HorizontalAlignment="Right" 
+            <StackPanel Margin="10 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="36" >Step 3</TextBlock>
+                    <TextBlock Name="txtTotalTweetsNB" FontSize="15" Margin="10 10" >(Total tweets: 12345)</TextBlock>
+                    <Button HorizontalAlignment="Right" 
                         FontSize="16" FontWeight="Bold" 
                         Click="Button_Click_2" Width="97" 
                         Margin="600 0" Height="34"
                         Name="btnBack">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="pack://application:,,,/Twitter Archive Eraser;component/left_grey.png" Height="25"/>
-                        <TextBlock Margin="5 0" FontWeight="Normal">Back</TextBlock>
-                    </StackPanel>
-                </Button>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="pack://application:,,,/Twitter Archive Eraser;component/left_grey.png" Height="25"/>
+                            <TextBlock Margin="5 0" FontWeight="Normal">Back</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="20" Margin="20 0 5 0">Uncheck the tweets you do</TextBlock>
+                    <TextBlock FontSize="20" Margin="0 0 5 0" FontWeight="Bold"> not</TextBlock>
+                    <TextBlock FontSize="20" Margin="0 0 10 0"> want to delete.</TextBlock>
+                    <TextBlock FontSize="20" Foreground="#FFFF0C00">[cannot be undone]</TextBlock>
+                </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock FontSize="20" Margin="20 0 5 0">Uncheck the tweets you do</TextBlock>
-                <TextBlock FontSize="20" Margin="0 0 5 0" FontWeight="Bold"> not</TextBlock>
-                <TextBlock FontSize="20" Margin="0 0 10 0"> want to delete.</TextBlock>
-                <TextBlock FontSize="20" Foreground="#FFFF0C00">[cannot be undone]</TextBlock>
-            </StackPanel>
-        </StackPanel>
-        
-        <StackPanel Grid.Row="4" Margin="0 5 0 0">
-            <StackPanel Orientation="Horizontal" Name="stackProgress" Visibility="Visible">
-                <TextBlock FontSize="14">Erasing tweets, this might take a while ... </TextBlock>
-                <TextBlock Name="txtPrcnt" FontSize="14" Margin="20 0 5 0">%</TextBlock>
-                <TextBlock FontSize="14">done.</TextBlock>
-            </StackPanel>
-            <ProgressBar Name="progressBar" Height="10" Maximum="100" Value="0" Margin="0 5 0 0"/>
-        </StackPanel>
 
-        <Grid Grid.Row="5" Margin="0 10 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <Button HorizontalAlignment="Center" 
+            <StackPanel Grid.Row="4" Margin="0 5 0 0">
+                <StackPanel Orientation="Horizontal" Name="stackProgress" Visibility="Visible">
+                    <TextBlock FontSize="14">Erasing tweets, this might take a while ...</TextBlock>
+                    <TextBlock Name="txtPrcnt" FontSize="14" Margin="20 0 5 0">%</TextBlock>
+                    <TextBlock FontSize="14">done.</TextBlock>
+                </StackPanel>
+                <ProgressBar Name="progressBar" Height="10" Maximum="100" Value="0" Margin="0 5 0 0"/>
+            </StackPanel>
+
+            <Grid Grid.Row="5" Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button HorizontalAlignment="Center" 
                     FontSize="20" 
                     FontWeight="Bold" 
                     Foreground="#FFF50505" 
                     Width="350" 
                     Name="btnEraseTweets"
                     Click="btnEraseTweets_Click" Grid.Column="0">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="pack://application:,,,/Twitter Archive Eraser;component/twitter_alt.ico"/>
-                    <TextBlock Margin="10 0 0 0" FontSize="24" FontWeight="Normal"
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Twitter Archive Eraser;component/twitter_alt.ico"/>
+                        <TextBlock Margin="10 0 0 0" FontSize="24" FontWeight="Normal"
                                Name="btnEraseTweetsLabel">Erase selected tweets</TextBlock>
-                </StackPanel>
-            </Button>
-        </Grid>
+                    </StackPanel>
+                </Button>
+            </Grid>
 
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" 
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" 
                     Grid.Row="6" Margin="0 0 0 0" Width="104">
-            <Image Source="pack://application:,,,/Twitter Archive Eraser;component/Twitter-256.png"/>
-            <TextBlock Margin="0 7 0 0">  
+                <Image Source="pack://application:,,,/Twitter Archive Eraser;component/Twitter-256.png"/>
+                <TextBlock Margin="0 7 0 0">  
                 <Hyperlink NavigateUri="https://twitter.com/martani_net" 
                            RequestNavigate="Hyperlink_RequestNavigate" 
                            TextDecorations="{x:Null}">
                     @martani_net
                 </Hyperlink>
-            </TextBlock>
-        </StackPanel>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <Grid Name="gridOverlayLoading" 
+              HorizontalAlignment="Center" 
+              VerticalAlignment="Center" 
+              Width="800" 
+              Height="300" Opacity="0.6" Background="#FF473E3E">
+
+            <TextBox TextWrapping="Wrap" FontSize="16" FontWeight="Bold" Margin="10" Background="Transparent" AcceptsReturn="True"
+                     Name="txtFeedback" Foreground="White" BorderThickness="0">
+                Extracting tweets from zip archive... This might take a while
+            </TextBox>
+        </Grid>
     </Grid>
 </Window>

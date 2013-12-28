@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Twitter_Archive_Eraser.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Twitter Archive Eraser" Height="358.572" Width="835.526" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Twitter Archive Eraser" Height="444.572" Width="835.526" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Margin="10 10 10 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -12,13 +12,27 @@
             <TextBlock FontSize="36" >Step 1</TextBlock>
             <TextBlock FontSize="20" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">
                 After you authorize this application, Twitter will give you a 7-digit PIN Number.</TextBlock>
+            <StackPanel Margin="39 10">
+                <TextBlock TextWrapping="Wrap">
+                    Twitter Archive Eraser will store some information for statistical purposes, including your user name and the number of tweets you have deleted.
+                </TextBlock>
+                <TextBlock>
+                    <Hyperlink NavigateUri="" 
+                               RequestNavigate="Hyperlink_RequestNavigate_1"
+                               TextDecorations="{x:Null}">
+                        Click here for the full list of information you need to share with Twitter Archive Eraser.
+                    </Hyperlink>
+                </TextBlock>
+                <CheckBox Name="chkAcceptToShare" Margin="0 5" Click="AcceptToShare_Click">I accept to share the sbove information with Twitter Archive Eraser.</CheckBox>
 
+            </StackPanel>
             <Button Name="btnAuthorize" 
                     Margin="0 30" 
                     Height="65" 
                     Width="330" 
                     FontWeight="Bold" 
                     FontSize="20" 
+                    IsEnabled="False"
                     Click="btnAuthorize_Click">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Image Name="imgTwitterAuth" Source="pack://application:,,,/Twitter Archive Eraser;component/Twitter-256-authorize.png"/>
