@@ -23,7 +23,7 @@
                         Click here for the full list of information you need to share with Twitter Archive Eraser.
                     </Hyperlink>
                 </TextBlock>
-                <CheckBox Name="chkAcceptToShare" Margin="0 5" Click="AcceptToShare_Click">I accept to share the sbove information with Twitter Archive Eraser.</CheckBox>
+                <CheckBox Name="chkAcceptToShare" Margin="0 5" Click="AcceptToShare_Click">I accept to share the above information with Twitter Archive Eraser.</CheckBox>
 
             </StackPanel>
             <Button Name="btnAuthorize" 

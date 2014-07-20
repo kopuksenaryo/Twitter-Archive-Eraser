@@ -35,6 +35,7 @@ namespace Twitter_Archive_Eraser
 
         bool hitReturn = false;
         bool isErasing = false;
+        bool isFilterView = false;
 
         const string STATUS_DELETED = "[DELETED ✔]";
         const string STATUS_NOT_FOUND = "[NOT FOUND ǃ]";
@@ -271,6 +272,12 @@ namespace Twitter_Archive_Eraser
         {
             e.Handled = true;
 
+            if (isFilterView)
+            {
+                MessageBox.Show("You are viewing only a subset of tweets. Please click 'Show all/Reset filter' button to show all the tweets first.", "Twitter Archive Eraser");
+                return;
+            }
+
             if (!isErasing)
             {
                 if (MessageBox.Show("Are you sure you want to delete all the selected tweets.\nThis cannot be undone!", "Twitter Archive Eraser",
@@ -325,12 +332,14 @@ namespace Twitter_Archive_Eraser
         {
             //CollectionViewSource tweetsDataView = this.Resources["tweetsDataView"] as CollectionViewSource;
             ApplyFilterToCollectionView();
+            isFilterView = true;
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             tweetsCollectionView.Filter = t => { return true; };
             tweetsCollectionView.Refresh();
+            isFilterView = false;
         }
 
 
@@ -351,7 +360,7 @@ namespace Twitter_Archive_Eraser
         //The number of the tweets to erase
         int nbTweetsToErase;
 
-#if DEBUG
+#if DEBUG_TEST
         int sleepFakeWaitMilliseconds;
 #endif
 
@@ -410,7 +419,7 @@ namespace Twitter_Archive_Eraser
 
             int nextTweetID = getNextTweetIDSync();
 
-#if DEBUG
+#if DEBUG_TEST
             Random rnd = new Random();
 #endif
 
@@ -424,7 +433,7 @@ namespace Twitter_Archive_Eraser
                 //Clear Tweets logic here
                 try
                 {
-#if DEBUG
+#if DEBUG_TEST
                     Thread.Sleep(sleepFakeWaitMilliseconds);
                     if (rnd.Next() % 3 == 0)    // Simulate error
                     {
@@ -435,15 +444,20 @@ namespace Twitter_Archive_Eraser
                         throw new Exception("Sorry, that page does not exist");
                     }
 #else
-                    Status ret = ctx.DestroyStatus(tweet.ID);
+                    ulong tid = ulong.Parse(tweet.ID);
+                    Status ret = ctx.DeleteTweetAsync(tid).Result;
+                    if (ret == null)
+                    {
+                        throw new Exception("Sorry, that page does not exist");
+                    }
 #endif
                     tweet.Status = STATUS_DELETED;
                 }
                 catch (Exception ex)
                 {
-                    if (ex.Message.Contains("Sorry, that page does not exist"))
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("Sorry, that page does not exist"))
                         tweet.Status = STATUS_NOT_FOUND;
-                    else if (ex.Message.Contains("You may not delete another user's status"))
+                    else if (ex.InnerException != null && ex.InnerException.Message.Contains("You may not delete another user's status"))
                         tweet.Status = STATUS_NOT_ALLOWED;
                     else
                     {
@@ -476,7 +490,7 @@ namespace Twitter_Archive_Eraser
             //No need to synchronize here, all tasks are (supposed?) not started yet.
             nbTweetsToErase = tweets.Where(t => t.ToErase == true || !String.IsNullOrEmpty(t.Status)).Count();
 
-#if !DEBUG
+#if !DEBUG_TEST
             if (ctx == null)
             {
                 MessageBox.Show("Error loading twitter authentication info; please try again", "Twitter Archive Eraser", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -486,7 +500,7 @@ namespace Twitter_Archive_Eraser
             }
 #endif
 
-#if DEBUG
+#if DEBUG_TEST
             sleepFakeWaitMilliseconds = 5000 / nbParallelConnections;
 #endif
 
@@ -523,7 +537,9 @@ namespace Twitter_Archive_Eraser
 
                     if (notDeletedTweets.Count == 0)
                     {
-                        MessageBox.Show("Done! Everything is clean ;).\n", "Twitter Archive Eraser", MessageBoxButton.OK, MessageBoxImage.Information);
+                        Application.Current.Properties["nbTeetsDeleted"] = tweets.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count();
+                        SendTweet sendTweetWindow = new SendTweet();
+                        sendTweetWindow.ShowDialog();
                     }
                     else
                     {
@@ -567,6 +583,12 @@ namespace Twitter_Archive_Eraser
                             Application.Current.Properties["jsFiles"] = new List<JsFile>();
                             DeleteTweets_Loaded(null, null);
                         }
+                        else
+                        {
+                            Application.Current.Properties["nbTeetsDeleted"] = tweets.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count();
+                            SendTweet sendTweetWindow = new SendTweet();
+                            sendTweetWindow.ShowDialog();
+                        }
                     }
                 }));
             }
@@ -584,6 +606,7 @@ namespace Twitter_Archive_Eraser
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 ApplyFilterToCollectionView();
+                isFilterView = true;
             }
         }
     }    

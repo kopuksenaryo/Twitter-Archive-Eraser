@@ -5,6 +5,8 @@ using System.Windows.Navigation;
 
 using LinqToTwitter;
 using System;
+using System.Configuration;
+using System.Threading.Tasks;
 
 namespace Twitter_Archive_Eraser
 {
@@ -27,7 +29,7 @@ namespace Twitter_Archive_Eraser
             
         }
 
-        ITwitterAuthorizer PerformAuthorization()
+        IAuthorizer PerformAuthorization()
         {
             // validate that credentials are present
             if (string.IsNullOrWhiteSpace(twitterConsumerKey) ||
@@ -44,37 +46,48 @@ namespace Twitter_Archive_Eraser
             // configure the OAuth object
             var auth = new PinAuthorizer
             {
-                Credentials = new InMemoryCredentials
+                CredentialStore = new InMemoryCredentialStore
                 {
                     ConsumerKey = twitterConsumerKey,
                     ConsumerSecret = twitterConsumerSecret
                 },
-                UseCompression = true,
                 GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
                 {
-                    // this executes after user authorizes, which begins with the call to auth.Authorize() below.
-                    
-                    PinWindow pinw = new PinWindow();
-                    pinw.Owner = this;
-                    if (pinw.ShowDialog() == true)
-                        return pinw.Pin;
-                    else
-                        return "";
+                    // ugly hack
+                    string pin = "";
+
+                    Dispatcher.Invoke((Action)
+                    (() =>
+                        {
+                            PinWindow pinw = new PinWindow();
+                            pinw.Owner = this;
+                            if (pinw.ShowDialog() == true)
+                                pin = pinw.Pin;
+                            else
+                                pin = "";
+                        }
+                    ));
+
+                    return pin;
                 }
             };
+
+            return auth;
 
             // start the authorization process (launches Twitter authorization page).
             try
             {
-                auth.Authorize();
+                Task t = auth.BeginAuthorizeAsync();
+                t.Wait();
             }
             catch (WebException ex)
             {
-                /*MessageBox.Show("Unable to authroize with Twitter right now. Please check pin number", "Twitter Archive Eraser",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                */
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message
+                                + "\n\nPlease make sure that:"
+                                + "\n\t- your computer's date/time is accurate;"
+                                + "\n\t- you entered the exact PIN returned by Twitter.",
+                                "Twitter Archive Eraser");
 
                 return null;
             }
@@ -88,27 +101,44 @@ namespace Twitter_Archive_Eraser
             e.Handled = true;
         }
 
-        private void btnAuthorize_Click(object sender, RoutedEventArgs e)
+        private async void btnAuthorize_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
             chkAcceptToShare.IsEnabled = false;
 
-            ITwitterAuthorizer auth = PerformAuthorization();
+            var auth = PerformAuthorization();
+
+            try
+            {
+                await auth.AuthorizeAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("\n\nPlease make sure that:"
+                                + "\n\t- your computer's date/time is accurate;"
+                                + "\n\t- you entered the exact PIN returned by Twitter."
+                                + "\n\n\nTwitter error message: " + ex.Message,
+                                "Twitter Archive Eraser");
+
+                return;
+            }
+            
 
             if (auth == null)
                 return;
 
             var ctx = new TwitterContext(auth);
+            var screenName = auth.CredentialStore.ScreenName;
 
             Application.Current.Properties["context"] = ctx;
-            Application.Current.Properties["userName"] = ctx.UserName;
+            Application.Current.Properties["userName"] = screenName;
             Application.Current.Properties["sessionGUID"] = Guid.NewGuid().ToString();
 
-            userName.Text = "@" + ctx.UserName;
+            userName.Text = "@" + screenName;
             stackWelcome.Visibility = System.Windows.Visibility.Visible;
             btnAuthorize.IsEnabled = false;
 
-            WebUtils.ReportNewUser(ctx.UserName, (string)Application.Current.Properties["sessionGUID"]);
+            WebUtils.ReportNewUser(screenName, (string)Application.Current.Properties["sessionGUID"]);
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)

@@ -125,7 +125,7 @@ namespace Twitter_Archive_Eraser
 
             if (jsFiles.Count < 1)
             {
-                MessageBox.Show("No Twitter archive *.js files were loaded!", "Twitter Archive Eraser", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("No Twitter archive or *.js files were loaded!", "Twitter Archive Eraser", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             treeFiles.ItemsSource = yearsOfTweets;
@@ -143,7 +143,7 @@ namespace Twitter_Archive_Eraser
 
             if (selectedJsFiles.Count == 0)
             {
-                MessageBox.Show("Please select at least one *.js file from the twitter archive",
+                MessageBox.Show("Please select at least one month from the twitter archive",
                                 "Twitter Archive Eraser", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
