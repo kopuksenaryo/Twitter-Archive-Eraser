@@ -17,10 +17,19 @@ namespace Twitter_Archive_Eraser
 
         public static string SendRequest(string queryString, string userName, string sessionGUID)
         {
-            using (WebClient wc = new WebClient())
+            try
             {
-                return wc.DownloadString(BASE_STATISTICS_URL + "user=" + userName + "&GUID=" + sessionGUID + "&" + queryString);
+                using (WebClient wc = new WebClient())
+                {
+                    return wc.DownloadString(BASE_STATISTICS_URL + "user=" + userName + "&GUID=" + sessionGUID + "&" + queryString);
+                }
             }
+            catch (Exception)
+            {
+                ;
+            }
+
+            return "";
         }
 
         public static void ReportNewUser(string userName, string sessionGUID)
@@ -36,11 +45,11 @@ namespace Twitter_Archive_Eraser
             SendRequest(query, userName, sessionGUID);
         }
 
-        public static void ReportStats(string userName, string sessionGUID, int total, int nb_deleted, int nb_not_found, 
+        public static void ReportStats(string userName, string sessionGUID, string deleteType, int total, int nb_deleted, int nb_not_found, 
                                        int nb_error, int nb_not_allowed, bool is_retrying, int nb_parallel, 
                                        List<string> filters, double duration_in_seconds)
         {
-            string query = OPERATION_TAG + "=" + OP_DELETED_TWEETS +
+            string query = OPERATION_TAG + "=" + OP_DELETED_TWEETS + string.Format("[{0}]", deleteType) +
                            "&total=" + total +
                            "&nb_deleted=" + nb_deleted +
                            "&nb_not_found=" + nb_not_found +

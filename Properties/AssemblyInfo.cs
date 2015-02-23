@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Twitter Archive Eraser")]
-[assembly: AssemblyDescription("Delete the oldest tweets from your Twitter account using Twitter Archive Eraser, a .NET app for bulk tweets deletion using the Twitter archive.")]
+[assembly: AssemblyDescription("Delete your oldest tweets, favorites, direct messages (DM) in bulk using Twitter Archive Eraser.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MARTANI")]
 [assembly: AssemblyProduct("Twitter Archive Eraser")]
-[assembly: AssemblyCopyright("Copyright © MARTANI 2013")]
+[assembly: AssemblyCopyright("Copyright © MARTANI 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.0.0.0")]
-[assembly: AssemblyFileVersion("4.0.0.0")]
+[assembly: AssemblyVersion("5.0.0.0")]
+[assembly: AssemblyFileVersion("5.0.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]

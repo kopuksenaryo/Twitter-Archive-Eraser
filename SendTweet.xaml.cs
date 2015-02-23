@@ -22,6 +22,7 @@ namespace Twitter_Archive_Eraser
     /// </summary>
     public partial class SendTweet : Window
     {
+        bool shouldExit = false;
         public SendTweet()
         {
             InitializeComponent();
@@ -31,35 +32,72 @@ namespace Twitter_Archive_Eraser
 
         void SendTweet_Loaded(object sender, RoutedEventArgs e)
         {
-            txtTweetText.Text = String.Format("Just deleted {0} tweets using Twitter Archive Eraser by @martani_net. Check it out here http://martani.github.io/Twitter-Archive-Eraser/",
-                                              Application.Current.Properties["nbTeetsDeleted"]);
+            var appSettings = ApplicationSettings.GetApplicationSettings();
+            //this.Title += " v" + appSettings.Version;
+
+            if (appSettings.NumTeetsDeleted < 10)
+            {
+                shouldExit = true;
+                btnSendTweetInnerText.Text = "Exit!";
+                btnSendTweet.ToolTip = "Not enough tweets to share... :(";
+            }
+
+            int mins = (int)appSettings.TotalRunningMillisec / 1000 / 60; 
+            int seconds = (int)(appSettings.TotalRunningMillisec - (mins * 60 * 1000)) / 1000;
+
+            string type = appSettings.EraseType == ApplicationSettings.EraseTypes.TweetsAndRetweets ? "tweets" :
+                          (appSettings.EraseType == ApplicationSettings.EraseTypes.Favorites ? "favorites" : "DMs");
+
+            string totalTime = "";
+            if (mins == 0) 
+            { 
+                totalTime = seconds + " seconds"; 
+            }
+            else
+            {
+                totalTime = mins + ":" + seconds + " min:sec";
+            }
+
+            txtTweetText.Text = String.Format("Just deleted {0} {1} using Twitter Archive Eraser by @martani_net (in {2}). Check it out here http://martani.github.io/Twitter-Archive-Eraser/",
+                                              appSettings.NumTeetsDeleted,
+                                              type,
+                                              totalTime);
         }
 
         private void btnSendTweet_Click(object sender, RoutedEventArgs e)
         {
-            btnSendTweet.IsEnabled = false;
-            TwitterContext ctx = (TwitterContext)Application.Current.Properties["context"];
+            if (!shouldExit)
+            {
+                btnSendTweet.IsEnabled = false;
+                TwitterContext ctx = ApplicationSettings.GetApplicationSettings().Context;
 
-            Status tweet = null;
+                Status tweet = null;
 
-            try
-            {
-                tweet = ctx.TweetAsync(txtTweetText.Text).Result;
-            }
-            catch (Exception)
-            {
-            };
-            
-            if (tweet != null)
-            {
-                txtTweetUpdateStatus.Text = "Sent ...";
-                DialogResult = true;
-                this.Close();
+                try
+                {
+                    tweet = ctx.TweetAsync(txtTweetText.Text).Result;
+                }
+                catch (Exception)
+                {
+                };
+
+                if (tweet != null)
+                {
+                    txtTweetUpdateStatus.Text = "Sent ...";
+                    Thread.Sleep(1000);
+                    DialogResult = true;
+                    this.Close();
+                }
+                else
+                {
+                    txtTweetUpdateStatus.Text = "Failed to send tweet, please try again";
+                    btnSendTweet.IsEnabled = true;
+                }
             }
             else
             {
-                txtTweetUpdateStatus.Text = "Failed to send tweet, please try again";
-                btnSendTweet.IsEnabled = true;
+                DialogResult = true;
+                this.Close();
             }
         }
 
@@ -79,6 +117,12 @@ namespace Twitter_Archive_Eraser
                 FormFadeOut.Begin();
                 e.Cancel = true;
             }
+        }
+
+        private void btnNo_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            this.Close();
         }
     }
 }

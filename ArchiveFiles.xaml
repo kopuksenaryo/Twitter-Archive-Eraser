@@ -26,7 +26,7 @@
                 </TextBlock>
             </StackPanel>
             <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Name="btnAddFiles" Padding="25 5" FontSize="26" Click="btnAddFiles_Click"
+                <Button Name="btnAddFiles" Padding="25 3 25 5" FontSize="26" Click="btnAddFiles_Click"
                         ToolTip="You can add multiple *.zip archive files or *.js files">Load/add Twitter archive files</Button>
             </StackPanel>
             </StackPanel>

@@ -23,6 +23,12 @@ namespace Twitter_Archive_Eraser
         public ArchiveFiles()
         {
             InitializeComponent();
+            this.Loaded += ArchiveFiles_Loaded;
+        }
+
+        void ArchiveFiles_Loaded(object sender, RoutedEventArgs e)
+        {
+            //this.Title += " v" + ApplicationSettings.GetApplicationSettings().Version;
         }
 
         private void btnAddFiles_Click(object sender, RoutedEventArgs e)
@@ -148,10 +154,11 @@ namespace Twitter_Archive_Eraser
                 return;
             }
 
-            Application.Current.Properties["jsFiles"] = selectedJsFiles;
+            var settings = ApplicationSettings.GetApplicationSettings();
+            settings.JsFiles = selectedJsFiles;
 
-            WebUtils.ReportMonthsToDelete((string)Application.Current.Properties["userName"], 
-                                          (string)Application.Current.Properties["sessionGUID"],
+            WebUtils.ReportMonthsToDelete(settings.Username, 
+                                          settings.SessionId.ToString(),
                                           selectedJsFiles.Select(jsFile => String.Format("{0}_{1}", jsFile.TweetYear, jsFile.TweetMonth)).ToList());
 
             DeleteTweets page = new DeleteTweets();

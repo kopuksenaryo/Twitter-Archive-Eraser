@@ -1,7 +1,8 @@
 ﻿<Window x:Class="Twitter_Archive_Eraser.DeleteTweets"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Delete Tweets" MinHeight="630" Height="687" MinWidth="1000" Width="1000" Closing="Window_Closing_1"
+        xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+        Title="Delete Tweets" MinHeight="850" Height="900" MinWidth="1200" Width="1400" Closing="Window_Closing_1"
         >
     <Grid>
         <Grid Margin="10" Name="gridContainer">
@@ -15,110 +16,151 @@
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
 
-            <DataGrid Grid.Row="3" Name="gridTweets" 
-                  AutoGenerateColumns="False" 
-                  CanUserResizeColumns="True"
-                  IsReadOnly="True"
-                  CanUserSortColumns="False"
-                  Margin="0 10 0 0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Status" Width="100" IsReadOnly="True" Binding="{Binding Status}">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style>
-                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.Header>
-                            <StackPanel>
-                                <TextBlock HorizontalAlignment="Center">Erase?</TextBlock>
-                                <CheckBox HorizontalAlignment="Center" 
-                                      Checked="SelectAllCheckBox_Checked" 
-                                      Unchecked="SelectAllCheckBox_UnChecked"
-                                      IsChecked="True"></CheckBox>
+            <Grid Grid.Row="3" Name="gridTweetsParent" HorizontalAlignment="Stretch" Margin="0 10 0 0">
+                <xcdg:DataGridControl x:Name="gridTweets" AllowDrag="False" HorizontalAlignment="Stretch">
+                    <xcdg:DataGridControl.Resources>
+                        <DataTemplate x:Key="UrlButton">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="{Binding Path=ID}" 
+                                        DataContext="{Binding RelativeSource={RelativeSource AncestorType=xcdg:DataCell}, Path=DataContext}" 
+                                        Click="DG_Hyperlink_Click"
+                                        BorderBrush="Transparent" 
+                                        Background="Transparent" 
+                                        Cursor="Hand" 
+                                        ToolTip="Click to open tweet on twitter">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <TextBlock TextDecorations="Underline">
+                                                <ContentPresenter />
+                                            </TextBlock>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Foreground" Value="Blue" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="Foreground" Value="Black" />
+                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
                             </StackPanel>
-                        </DataGridTemplateColumn.Header>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding Path=ToErase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
+                        </DataTemplate >
 
-                    </DataGridTemplateColumn>
+                        <Style TargetType="{x:Type xcdg:GroupHeaderControl}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type xcdg:GroupHeaderControl}">
+                                        <Border Background="Orange" BorderThickness="0 0 0 1" BorderBrush="Black">
+                                            <Grid>            
+                                                <ToggleButton Name="btnExpandCollapseGroupHeader" 
+                                                              Click="btnExpandCollapseGroupHeader_Click" 
+                                                              HorizontalAlignment="Left"
+                                                              Height="15"
+                                                              Width="15"
+                                                              Margin="2 2"
+                                                              Padding="0 -2"
+                                                              ToolTip="Expand / collapse group"
+                                                              IsChecked="True"
+                                                              Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Group}" >-</ToggleButton>
+                                                <ContentPresenter Margin="17 0 0 0"/>
+                                                
+                                                <CheckBox Name="chkGroupHeader" 
+                                                          Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Group.Value}" 
+                                                          Click="chkGroupHeader_Click" 
+                                                          Content="Select all/none" 
+                                                          IsChecked="True"
+                                                          Margin="334 5 0 0" 
+                                                          ToolTip="Select all/none tweets in this month"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </xcdg:DataGridControl.Resources>
+                    <xcdg:DataGridControl.View>
+                        <xcdg:TableflowView FixedColumnCount="4" 
+                                            ShowRowSelectorPane="False" 
+                                            ShowScrollTip="True" 
+                                            UseDefaultHeadersFooters="False" AllowColumnChooser="False" ScrollingAnimationDuration="300" RowFadeInAnimationDuration="100">
+                            <xcdg:TableflowView.FixedHeaders>
+                                <DataTemplate>
+                                    <xcdg:ColumnManagerRow AllowColumnResize="False" AllowColumnReorder="True"/>
+                                </DataTemplate>
+                            </xcdg:TableflowView.FixedHeaders>
+                        </xcdg:TableflowView>
+                    </xcdg:DataGridControl.View>
 
-                    <DataGridHyperlinkColumn Header="Tweet ID" Binding="{Binding ID}" Width="120">
-                        <DataGridHyperlinkColumn.ElementStyle>
-                            <Style>
-                                <EventSetter Event="Hyperlink.Click" Handler="DG_Hyperlink_Click"/>
-                                <Setter Property="FrameworkElement.Width" Value="120"/>
-                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridHyperlinkColumn.ElementStyle>
-                    </DataGridHyperlinkColumn>
-                    <DataGridTextColumn Header="Is Retweet?" Binding="{Binding IsRetweet}" Width="70">
-                        <DataGridTextColumn.CellStyle>
-                            <Style>
-                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
-                                <Setter Property="FrameworkElement.Width" Value="70"/>
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="140">
-                        <DataGridTextColumn.CellStyle>
-                            <Style>
-                                <Setter Property="FrameworkElement.HorizontalAlignment" Value="Center"/>
-                                <Setter Property="FrameworkElement.Width" Value="140"/>
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Tweet" Binding="{Binding Text}" Width="*"/>
-                </DataGrid.Columns>
-
-            </DataGrid>
-
-            <GroupBox Header="Filter Tweets" Grid.Row="1" Name="grpFilterTweets">
+                    <xcdg:DataGridControl.Columns>
+                        <xcdg:Column FieldName="YearMonth" Title="Month" Width="100" ReadOnly="True" AllowSort="False" />
+                        <xcdg:Column FieldName="Type" Title="Type" Width="70" ReadOnly="True"/>
+                        <xcdg:Column FieldName="Status" Title="Status" Width="110" ReadOnly="True" AllowSort="False" CellHorizontalContentAlignment="Center"/>
+                        <xcdg:Column FieldName="ToErase" Title="Erase ?"  Width="90" CellEditorDisplayConditions="MouseOverCell" AllowSort="False" CellHorizontalContentAlignment="Center" >
+                            <xcdg:Column.TitleTemplate>
+                                <DataTemplate>
+                                    <CheckBox Name="chkSelectAll" Click="chkSelectAll_Click" Margin="0 2 0 0" ToolTip="Check / Uncheck all">Erase ?</CheckBox>
+                                </DataTemplate>
+                            </xcdg:Column.TitleTemplate>
+                        </xcdg:Column>
+                        <xcdg:Column FieldName="ID" Title="Tweet ID" Width="130" ReadOnly="True" AllowSort="False" CellContentTemplate="{StaticResource UrlButton}">
+                        </xcdg:Column>
+                        <xcdg:Column FieldName="Username" Title=" User" Width="120" ReadOnly="True"/>
+                        <xcdg:Column FieldName="Date" Title=" Date" Width="140" CellEditorDisplayConditions="None" ReadOnly="True"/>
+                        <xcdg:Column FieldName="Text" Title=" Text" Width="*" ReadOnly="True" AllowSort="False"/>
+                    </xcdg:DataGridControl.Columns>
+                </xcdg:DataGridControl>
+            </Grid>
+            
+            <GroupBox Header="Search &amp; Filter Tweets" Grid.Row="1" Name="grpFilterTweets">
                 <StackPanel  Orientation="Horizontal">
-                    <TextBlock Margin="80 5 0 0"><Run Text="Filter text:"/></TextBlock>
+                    <TextBlock Margin="80 2 0 0"><Run Text="Filter text:"/></TextBlock>
                     <TextBox x:Name="txtFilterTweets" Margin="10 0" Width="175" KeyUp="txtFilterTweets_KeyUp"/>
-                    <Button x:Name="btnSearch" Width="127" Margin="20 0" Click="btnSearch_Click" Content="Search"/>
-                    <Button x:Name="btnClear" Width="166" Margin="20 0" Click="btnClear_Click" Content="Show all / Reset filter"/>
-
+                    <Button x:Name="btnSearch" Padding="20 0" Margin="20 0" Click="btnSearch_Click" Content="Search"/>
+                    <Button x:Name="btnClear" Padding="10 0" Margin="0" Click="btnClear_Click" Content="Show all / Reset filter"/>
+                    <CheckBox Name="chkShowRetweetOnly" Margin="30 5 0 0" Content="Show retweets only" Click="chkShowRetweetOnly_Click"/>
+                    <CheckBox Name="chkSimpleTextSearch" Click="chkSimpleTextSearch_Click" Margin="10 5 0 0" ToolTip="Switch ON to search for tweets using regular expression patterns">
+                        Regular expressions matching
+                    </CheckBox>
+                    <CheckBox Name="chkSearchByUsername" Margin="10 5 0 0" Content="Filter based on user name" Click="chkSearchByUsername_Click" />
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Number of parallel connections: 8 " Grid.Row="2" Margin="0 5 0 0"
+            <GroupBox Header="Number of parallel connections: 16 " Grid.Row="2" Margin="0 5 0 0"
                   Name="grpParallelConnections"
                   ToolTip="For good internet connection speeds, select more parallel connections">
-                <Slider TickPlacement="BottomRight" Value="8"
+                <Slider TickPlacement="BottomRight" Value="16"
                     Name="sliderParallelConnections"
                     ToolTip="Connection Speed" 
-                    Maximum="16" Minimum="2" SmallChange="1"
+                    Maximum="24" Minimum="2" SmallChange="1"
                     IsSnapToTickEnabled="True"
                     Margin="20 5 20 0" ValueChanged="sliderParallelConnections_ValueChanged"
                     />
             </GroupBox>
 
             <StackPanel Margin="10 0 0 0">
-                <StackPanel Orientation="Horizontal">
+                <Grid>
                     <TextBlock FontSize="36" >Step 3</TextBlock>
-                    <TextBlock Name="txtTotalTweetsNB" FontSize="15" Margin="10 10" >(Total tweets: 12345)</TextBlock>
+                    <TextBlock Name="txtTotalTweetsNB" FontSize="15" Margin="110 15" >(Total tweets: 12345)</TextBlock>
                     <Button HorizontalAlignment="Right" 
-                        FontSize="16" FontWeight="Bold" 
-                        Click="Button_Click_2" Width="97" 
-                        Margin="600 0" Height="34"
-                        Name="btnBack">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="pack://application:,,,/Twitter Archive Eraser;component/left_grey.png" Height="25"/>
-                            <TextBlock Margin="5 0" FontWeight="Normal">Back</TextBlock>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="20" Margin="20 0 5 0">Uncheck the tweets you do</TextBlock>
-                    <TextBlock FontSize="20" Margin="0 0 5 0" FontWeight="Bold"> not</TextBlock>
-                    <TextBlock FontSize="20" Margin="0 0 10 0"> want to delete.</TextBlock>
+                            FontSize="16" 
+                            FontWeight="Bold" 
+                            Click="Button_Click_2" 
+                            Width="97" 
+                            Height="34"
+                            Name="btnBack">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="pack://application:,,,/Twitter Archive Eraser;component/left_grey.png" Height="25"/>
+                                <TextBlock Margin="5 0" FontWeight="Normal">Back</TextBlock>
+                            </StackPanel>
+                        </Button>
+                </Grid>
+                <StackPanel Orientation="Horizontal" ToolTip="The tweets that are checked will be deleted">
+                    <TextBlock FontSize="20" Margin="20 0 5 0">Uncheck the tweets you</TextBlock>
+                    <TextBlock FontSize="20" Margin="0 0 5 0" FontWeight="Bold"> want to keep</TextBlock>
                     <TextBlock FontSize="20" Foreground="#FFFF0C00">[cannot be undone]</TextBlock>
                 </StackPanel>
             </StackPanel>
@@ -129,7 +171,8 @@
                     <TextBlock Name="txtPrcnt" FontSize="14" Margin="20 0 5 0">%</TextBlock>
                     <TextBlock FontSize="14">done.</TextBlock>
                 </StackPanel>
-                <ProgressBar Name="progressBar" Height="10" Maximum="100" Value="0" Margin="0 5 0 0"/>
+                <ProgressBar Name="progressBar2" Height="3"/>
+                <ProgressBar Name="progressBar" Height="10" Maximum="100" Value="0" Margin="0 2 0 0"/>
             </StackPanel>
 
             <Grid Grid.Row="5" Margin="0 10 0 0">
@@ -166,6 +209,7 @@
         </Grid>
 
         <Grid Name="gridOverlayLoading" 
+              Visibility="Visible"
               HorizontalAlignment="Center" 
               VerticalAlignment="Center" 
               Width="800" 
@@ -173,7 +217,7 @@
 
             <TextBox TextWrapping="Wrap" FontSize="16" FontWeight="Bold" Margin="10" Background="Transparent" AcceptsReturn="True"
                      Name="txtFeedback" Foreground="White" BorderThickness="0">
-                Extracting tweets from zip archive... This might take a while
+                Extracting tweets... This might take a while
             </TextBox>
         </Grid>
     </Grid>

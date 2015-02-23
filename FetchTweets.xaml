@@ -1,0 +1,81 @@
+﻿<Window x:Class="Twitter_Archive_Eraser.FetchTweets"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Query Tweets" Height="413" Width="884" Closing="Window_Closing" ResizeMode="NoResize">
+    <Grid Margin="10 10 10 0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="20 20 20 0" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="36" Padding="0 0 5 0">Get</TextBlock>
+                <TextBlock Name="lblTweetsType" FontSize="36" >[TweetsType]</TextBlock>
+                <TextBlock Name="lblTotalTweetsNB" FontSize="15" Margin="10 20 0 0" >(Your favorites count: 12345)</TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="20" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="40 0 0 0">You can query twitter for a max of</TextBlock>
+                <TextBlock Name="lblTweetsMax" FontSize="20" Padding="5 0 0 0">XXXXX</TextBlock>
+                <TextBlock Name="lblTweetsType2" Padding="5 0 0 0" FontSize="20" >[TweetsType]</TextBlock>
+                <TextBlock FontSize="20" Padding="5 0 0 0">each 15 minutes.</TextBlock>
+            </StackPanel>
+            
+            
+            <StackPanel Margin="40 20 40 0">
+                <Button Name="btnFetch"
+                            HorizontalAlignment="Center"
+                            Height="50" 
+                            Padding="30 0 45 0"
+                            FontWeight="Bold" 
+                            FontSize="20" 
+                            IsEnabled="True"
+                            Click="btnFetch_Click">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Image Name="imgTwitterAuth2" Source="pack://application:,,,/Twitter Archive Eraser;component/favorite-icon.png"/>
+                        <TextBlock Name="btnFetchTxt" Margin="5 3 0 0" FontSize="28" FontWeight="Normal">Start</TextBlock>
+                    </StackPanel>
+                </Button>
+
+                <ProgressBar Name="progressBar" Height="10" Margin="0 20 0 0"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock FontSize="20" Padding="5 0" FontWeight="Bold" HorizontalAlignment="Center">Fetched:</TextBlock>
+                    <TextBlock Name="lblFetched" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center">0 tweets</TextBlock>
+                </StackPanel>
+                <StackPanel Height="70">
+                    <StackPanel Grid.Row="0" Name="stackReachedLimits" Orientation="Horizontal" Visibility="Collapsed">
+                        <TextBlock FontSize="16" Margin="0 10 5 0" HorizontalAlignment="Left">Reached Twitter's allowed limits! You can get more tweets in:</TextBlock>
+                        <TextBlock Name="lblRemainingTime" FontSize="16" Margin="0 10 0 0" FontWeight="Bold" HorizontalAlignment="Left">-00min &amp; -00sec</TextBlock>
+                        <TextBlock FontSize="16" Margin="0 10 0 0" HorizontalAlignment="Left">.</TextBlock>
+                    </StackPanel>
+                    <TextBlock Grid.Row="1" Name="lblContinue"
+                               Visibility="Visible"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Margin="0 10 0 0" 
+                               HorizontalAlignment="Center">Or click 'Next' to continue with the fetched tweets.</TextBlock>
+                </StackPanel>
+            </StackPanel>
+            <Button Name="btnNext"
+                            HorizontalAlignment="Right"
+                            Height="40" 
+                            Padding="40 0"
+                            FontWeight="Bold" 
+                            FontSize="20" 
+                            IsEnabled="True"
+                            Click="btnNext_Click">
+                Next
+            </Button>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="1">
+            <Image Source="pack://application:,,,/Twitter Archive Eraser;component/Twitter-256.png" Name="imgTwitterGray"/>
+            <TextBlock Margin="0 7 0 0">  
+                <Hyperlink NavigateUri="https://twitter.com/martani_net" 
+                           RequestNavigate="Hyperlink_RequestNavigate" 
+                           TextDecorations="{x:Null}">
+                    @martani_net
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,8 +1,12 @@
-﻿using System;
+﻿using LinqToTwitter;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Windows;
 
 namespace Twitter_Archive_Eraser
 {
@@ -10,10 +14,18 @@ namespace Twitter_Archive_Eraser
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string ID { set; get; }
-        public string Text { set; get; }
-        public DateTime Date { set; get; }
-        public string IsRetweet { set; get; }
+        public string ID { get; set; }
+        public string Text { get; set; }
+        public string Username { get; set; }
+        public DateTime Date { get; set; }
+        public string YearMonth
+        {
+            get
+            {
+                return string.Format("{0} / {1}", Date.Year, Date.ToString("MMMM"));
+            }
+        }
+        public TweetType Type { get; set; }
 
         private string _status;
         public string Status
@@ -51,6 +63,14 @@ namespace Twitter_Archive_Eraser
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
         }
+    }
+
+    public enum TweetType
+    {
+        Tweet,
+        Favorite,
+        DM,
+        Retweet
     }
 
     public class JsFile : INotifyPropertyChanged
@@ -101,5 +121,58 @@ namespace Twitter_Archive_Eraser
         public string text { get; set; }
         public string created_at { get; set; }
         public Object retweeted_status { get; set; }
+    }
+
+    class ApplicationSettings
+    {
+        public TwitterContext Context { get; set; }
+        public string Username { get; set; }
+        public ulong UserID { get; set; }
+        public Guid SessionId { get; set; }
+
+        public List<JsFile> JsFiles { get; set; }
+
+        public int NumTeetsDeleted { get; set; }
+
+        public EraseTypes EraseType { get; set; }
+
+        public long TotalRunningMillisec { get; set; }
+
+        public string Version
+        {
+            get
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                return fvi.FileMajorPart + "." + fvi.FileMinorPart;
+            }
+        }
+
+        public ApplicationSettings()
+        {
+            EraseType = EraseTypes.TweetsAndRetweets;
+        }
+
+        public static void SetApplicationSettings(ApplicationSettings settings)
+        {
+            Application.Current.Properties["SETTINGS"] = settings;
+        }
+
+        public static ApplicationSettings GetApplicationSettings()
+        {
+            if (Application.Current.Properties["SETTINGS"] == null)
+            {
+                Application.Current.Properties["SETTINGS"] = new ApplicationSettings();
+            }
+
+            return Application.Current.Properties["SETTINGS"] as ApplicationSettings;
+        }
+
+        public enum EraseTypes
+        {
+            TweetsAndRetweets,
+            Favorites,
+            DirectMessages
+        }
     }
 }

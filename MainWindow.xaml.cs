@@ -7,6 +7,8 @@ using LinqToTwitter;
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
+using System.Linq;
 
 namespace Twitter_Archive_Eraser
 {
@@ -18,6 +20,11 @@ namespace Twitter_Archive_Eraser
         private string twitterConsumerKey = ConfigurationManager.AppSettings["twitterConsumerKey"];
         private string twitterConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
 
+        private string twitterConsumerKeyDM = ConfigurationManager.AppSettings["twitterConsumerKeyDM"];
+        private string twitterConsumerSecretDM =  ConfigurationManager.AppSettings["twitterConsumerSecretDM"];
+
+        bool needsDMPermissions = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -26,14 +33,16 @@ namespace Twitter_Archive_Eraser
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            this.Title += " v" + ApplicationSettings.GetApplicationSettings().Version;
         }
 
         IAuthorizer PerformAuthorization()
         {
             // validate that credentials are present
-            if (string.IsNullOrWhiteSpace(twitterConsumerKey) ||
-                string.IsNullOrWhiteSpace(twitterConsumerSecret))
+            if (string.IsNullOrWhiteSpace(twitterConsumerKey) 
+                || string.IsNullOrWhiteSpace(twitterConsumerSecret)
+                || string.IsNullOrWhiteSpace(twitterConsumerKeyDM) 
+                || string.IsNullOrWhiteSpace(twitterConsumerSecretDM))
             {
                 MessageBox.Show(@"Error while setting " +
                                     "App.config/appSettings. \n\n" +
@@ -43,14 +52,28 @@ namespace Twitter_Archive_Eraser
                 return null;
             }
 
-            // configure the OAuth object
-            var auth = new PinAuthorizer
+            InMemoryCredentialStore credentialStore = null;
+            if(needsDMPermissions)
             {
-                CredentialStore = new InMemoryCredentialStore
+                credentialStore = new InMemoryCredentialStore()
+                {
+                    ConsumerKey = twitterConsumerKeyDM,
+                    ConsumerSecret = twitterConsumerSecretDM
+                };
+            }
+            else
+            {
+                credentialStore = new InMemoryCredentialStore()
                 {
                     ConsumerKey = twitterConsumerKey,
                     ConsumerSecret = twitterConsumerSecret
-                },
+                };
+            }
+
+            // configure the OAuth object
+            var auth = new PinAuthorizer
+            {
+                CredentialStore = credentialStore,
                 GoToTwitterAuthorization = pageLink => Process.Start(pageLink),
                 GetPin = () =>
                 {
@@ -74,25 +97,6 @@ namespace Twitter_Archive_Eraser
             };
 
             return auth;
-
-            // start the authorization process (launches Twitter authorization page).
-            try
-            {
-                Task t = auth.BeginAuthorizeAsync();
-                t.Wait();
-            }
-            catch (WebException ex)
-            {
-                MessageBox.Show(ex.Message
-                                + "\n\nPlease make sure that:"
-                                + "\n\t- your computer's date/time is accurate;"
-                                + "\n\t- you entered the exact PIN returned by Twitter.",
-                                "Twitter Archive Eraser");
-
-                return null;
-            }
-
-            return auth;
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -105,7 +109,7 @@ namespace Twitter_Archive_Eraser
         {
             e.Handled = true;
             chkAcceptToShare.IsEnabled = false;
-
+            
             var auth = PerformAuthorization();
 
             try
@@ -119,36 +123,40 @@ namespace Twitter_Archive_Eraser
                                 + "\n\t- you entered the exact PIN returned by Twitter."
                                 + "\n\n\nTwitter error message: " + ex.Message,
                                 "Twitter Archive Eraser");
-
                 return;
             }
-            
 
             if (auth == null)
                 return;
 
-            var ctx = new TwitterContext(auth);
-            var screenName = auth.CredentialStore.ScreenName;
-
-            Application.Current.Properties["context"] = ctx;
-            Application.Current.Properties["userName"] = screenName;
-            Application.Current.Properties["sessionGUID"] = Guid.NewGuid().ToString();
-
-            userName.Text = "@" + screenName;
-            stackWelcome.Visibility = System.Windows.Visibility.Visible;
+            var settings = ApplicationSettings.GetApplicationSettings();
+            settings.Context = new TwitterContext(auth);
+            settings.Username = auth.CredentialStore.ScreenName;
+            settings.UserID = auth.CredentialStore.UserID;
+            settings.SessionId = Guid.NewGuid();
+            
+            userName.Text = "@" + settings.Username;
             btnAuthorize.IsEnabled = false;
 
-            WebUtils.ReportNewUser(screenName, (string)Application.Current.Properties["sessionGUID"]);
+            WebUtils.ReportNewUser(settings.Username, settings.SessionId.ToString());
+
+            stackWelcome.Opacity = 0.0;
+            stackWelcome.Visibility = System.Windows.Visibility.Visible;
+            FadeAnimation(stackAuthorize, 1.0, 0.0, 200);
+            FadeAnimation(stackWelcome, 0.0, 1.0, 2000);
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
+
+            var settings = ApplicationSettings.GetApplicationSettings();
+            settings.EraseType = ApplicationSettings.EraseTypes.TweetsAndRetweets;
+
             ArchiveFiles page = new ArchiveFiles();
             this.Hide();
             page.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             page.ShowDialog();
-            //Application.Current.Shutdown();
         }
 
         private void Hyperlink_RequestNavigate_1(object sender, RequestNavigateEventArgs e)
@@ -167,6 +175,58 @@ namespace Twitter_Archive_Eraser
             {
                 btnAuthorize.IsEnabled = false;
             }
+        }
+
+        void FadeAnimation(FrameworkElement control, double animationOpacityFrom, double animationOpacityTo, int animationDurationInMilliSec)
+        {
+            // Create a storyboard to contain the animations.
+            Storyboard storyboard = new Storyboard();
+            TimeSpan duration = new TimeSpan(0, 0, 0, 0, animationDurationInMilliSec);
+
+            DoubleAnimation animation = new DoubleAnimation();
+            animation.From = animationOpacityFrom;
+            animation.To = animationOpacityTo;
+            animation.Duration = new Duration(duration);
+
+            // Configure the animation to target de property Opacity
+            Storyboard.SetTargetName(animation, control.Name);
+            Storyboard.SetTargetProperty(animation, new PropertyPath(System.Windows.Controls.Control.OpacityProperty));
+            
+            // Add the animation to the storyboard
+            storyboard.Children.Add(animation);
+            storyboard.Begin(this);
+        }
+
+        private void btnRemoveFavorites_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            var settings = ApplicationSettings.GetApplicationSettings();
+            settings.EraseType = ApplicationSettings.EraseTypes.Favorites;
+
+            FetchTweets page = new FetchTweets();
+            this.Hide();
+            page.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            page.ShowDialog();
+        }
+
+        private void chkDeleteDm_Click(object sender, RoutedEventArgs e)
+        {
+            needsDMPermissions = chkDeleteDm.IsChecked == true ? true : false;
+            btnRemoveDM.IsEnabled = needsDMPermissions;
+        }
+
+        private void btnRemoveDM_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+
+            var settings = ApplicationSettings.GetApplicationSettings();
+            settings.EraseType = ApplicationSettings.EraseTypes.DirectMessages;
+
+            FetchTweets page = new FetchTweets();
+            this.Hide();
+            page.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            page.ShowDialog();
         }
     }
 }
