@@ -141,7 +141,7 @@ namespace Twitter_Archive_Eraser
             gridTweets.Dispatcher.BeginInvoke(new Action(delegate()
             {
                 gridTweets.ItemsSource = tweetsCollectionView;
-                gridTweets.AutoScrollCurrentItem = Xceed.Wpf.DataGrid.AutoScrollCurrentItemTriggers.CurrentChanged;
+                //gridTweets.AutoScrollCurrentItem = Xceed.Wpf.DataGrid.AutoScrollCurrentItemTriggers.CurrentChanged;
                 gridTweets.ItemScrollingBehavior = Xceed.Wpf.DataGrid.ItemScrollingBehavior.Deferred;
 
                 gridContainer.IsEnabled = true;

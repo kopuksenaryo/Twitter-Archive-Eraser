@@ -86,7 +86,7 @@
                         <xcdg:TableflowView FixedColumnCount="4" 
                                             ShowRowSelectorPane="False" 
                                             ShowScrollTip="True" 
-                                            UseDefaultHeadersFooters="False" AllowColumnChooser="False" ScrollingAnimationDuration="300" RowFadeInAnimationDuration="100">
+                                            UseDefaultHeadersFooters="False" ScrollingAnimationDuration="300" RowFadeInAnimationDuration="100">
                             <xcdg:TableflowView.FixedHeaders>
                                 <DataTemplate>
                                     <xcdg:ColumnManagerRow AllowColumnResize="False" AllowColumnReorder="True"/>

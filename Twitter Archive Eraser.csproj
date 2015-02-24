@@ -17,6 +17,8 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <NuGetPackageImportStamp>0a1ad9a5</NuGetPackageImportStamp>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -33,14 +35,12 @@
     <PublisherName>MARTANI</PublisherName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>14</ApplicationRevision>
+    <ApplicationRevision>16</ApplicationRevision>
     <ApplicationVersion>5.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -134,11 +134,11 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.Controls.v5.4">
-      <HintPath>packages\Xceed.Wpf.Controls.5.4.14473.13530\lib\net40\Xceed.Wpf.Controls.v5.4.dll</HintPath>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid.v5.4">
-      <HintPath>packages\Xceed.Wpf.DataGrid.5.4.14473.13530\lib\net40\Xceed.Wpf.DataGrid.v5.4.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -21,7 +21,7 @@ namespace Twitter_Archive_Eraser
         private string twitterConsumerSecret = ConfigurationManager.AppSettings["twitterConsumerSecret"];
 
         private string twitterConsumerKeyDM = ConfigurationManager.AppSettings["twitterConsumerKeyDM"];
-        private string twitterConsumerSecretDM =  ConfigurationManager.AppSettings["twitterConsumerSecretDM"];
+        private string twitterConsumerSecretDM = ConfigurationManager.AppSettings["twitterConsumerSecretDM"];
 
         bool needsDMPermissions = false;
 
