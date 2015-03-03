@@ -119,13 +119,13 @@ $(document).ready(function ($) {
 	
 	
 	$(function() {
-      $('a[href*=#]:not([href=#])').click(function() {
+      $('a[href*=#]:not([href*=#collapse]):not([href=#])').click(function() {
         if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
           var target = $(this.hash);
           target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
           if (target.length) {
             $('html,body').animate({
-              scrollTop: target.offset().top - 20
+              scrollTop: target.offset().top - 30
             }, 1000);
             return false;
           }
@@ -213,6 +213,7 @@ $(document).ready(function ($) {
     };
  
     function interval() {
+        /*
 		if(isPause === false){
 			percentTime += 1 / time;
 			$bar.css({
@@ -222,6 +223,7 @@ $(document).ready(function ($) {
 				$elem.trigger('owl.next')
 			}
 		}
+        */
     }
 	
     function pauseOnDragging(){
