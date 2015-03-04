@@ -14,9 +14,12 @@
 	<!-- Responsive Metatag -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	
+    <meta name="google-site-verification" content="UCWBTIYI0uxajwMgglkc9iqzl0LJ7Lajl96esD2sIns" />
+
+    
 	<!-- Page Description and Author -->
-	<meta name="description" content="Margo - Responsive HTML5 Template">
-	<meta name="author" content="iThemesLab">
+	<meta name="description" content="witter Archive Eraser: Search, Filter and Bulk Delete your Oldest Tweets, Favorites, Direct Messages (DMs) Automatically">
+	<meta name="author" content="martani">
 	
 	<!-- Bootstrap CSS  -->
 	<link rel="stylesheet" href="asset/css/bootstrap.min.css" type="text/css" media="screen">
@@ -81,59 +84,22 @@
 	<script src="javascripts/jquery.numberformatter-1.2.2.min.js" type="text/javascript"></script>		
 	<script src="javascripts/jquery.flipCounter.1.2.pack.js" type="text/javascript"></script>
 	
-	<script type="text/javascript">
-	/* <![CDATA[ */
-			function commafy( num){
-			  var parts = (''+num).split("."), s=parts[0], i=L= s.length, o='',c;
-			  while(i--){ o = (i==0?'':((L-i)%3?'':',')) 
-							  +s.charAt(i) +o }
-			  return o + (parts[1] ? '.' + parts[1] : ''); 
-			}
+    	<script type="text/javascript">
 
-			jQuery(document).ready(function($) {
-					var counter = 0;
-					$.ajax("http://twitterarchiveeraser.azurewebsites.net/Home/deleted")
-					.done(function( data ) {
-						//alert(data);
-						counter = data;
-						
-						$("#total_deleted").flipCounter(
-							"startAnimation", // scroll counter from the current number to the specified number
-							{
-									number: counter - 5000, // the number we want to scroll from
-									end_number: counter, // the number we want the counter to scroll to
-									easing: jQuery.easing.easeOutQuint, // this easing function to apply to the scroll.
-									duration: 5000, // number of ms animation should take to complete
-									formatNumberOptions:{format:"0,000,000", locale:"us"}
-							}
-						);
-					})
-					  
-					$.ajax("http://twitterarchiveeraser.azurewebsites.net/Home/loaded")
-					.done(function( data ) {
-						//alert(data);				
-						$("#total_loaded").html("And loaded a total of <b>" + commafy(data) + "</b> tweets!");
-					});
-						
-					$("#total_deleted").flipCounter({
-							imagePath:"images/flipCounter-medium.png", // the path to the sprite image relative to your html document
-							digitClass:"counter-digit", // class of the counter digits
-							digitHeight:45, // the height of each digit in the flipCounter-medium.png sprite image
-							digitWidth:30, // the width of each digit in the flipCounter-medium.png sprite image
-							/*number:0, // the initial number the counter should display, overrides the hidden field
-							numIntegralDigits:1, // number of places left of the decimal point to maintain
-							numFractionalDigits:0, // number of places right of the decimal point to maintain
-							counterFieldName:"counter-value", // name of the hidden field
-							easing: false, // the easing function to apply to animations, you can override this with a jQuery.easing method
-							duration:10000, // duration of animations
-							onAnimationStarted:false, // call back for animation upon starting
-							onAnimationStopped:false, // call back for animation upon stopping
-							onAnimationPaused:false, // call back for animation upon pausing
-							onAnimationResumed:false // call back for animation upon resuming from pause*/
-					});            
-			});
-	/* ]]> */
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-9720146-8']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
 	</script>
+
+    
+	
 	
 </head>
 <body>
@@ -163,10 +129,10 @@
 								<a class="active" href="#container">Home</a>
 							</li>
 							<li>
-								<a href="#downloads">Download</a>
-							</li>
-							<li>
 								<a href="#content">Features</a>
+							</li>
+                            <li>
+								<a href="#downloads">Download</a>
 							</li>
                             <li>
 								<a href="#howtouse">How to use</a>
@@ -301,7 +267,7 @@
 						<!-- Call Action Text -->
 						<h2 class="primary">Twitter Archive Eraser <strong>version 5.0</strong> is now available!</h2>
                     <p>Now with bulk <strong>Favorites</strong> and <strong>Direct Messages</strong> delete.</p>
-					</div>
+				</div>
                 
 				<!-- Divider -->
 				<div class="hr5" style="margin-top:25px; margin-bottom:45px;"></div>
@@ -400,62 +366,18 @@
                     <div class="col-md-4 col-md-offset-4">
 						<div class="team-member">
                         <div class="member-photo">
-                                    <img alt="" src="images/doge.png" />
+                                    <img title="* Delete tweets in bulk (even the oldest of them, no limits)
+* Load your twitter archive in one click and choose any tweets from a given month/year
+* Filter tweets by keyword search or regular expressions search. Search retweets etc.
+* Blazingly fast, you can choose up to 32 parallel operations.
+" 
+                                         src="images/doge.png" />
                                     <div class="member-name">Doge <span>Official Mascot</span></div>
 						</div>
                         </div>
                     </div>
 					<!-- End Big Heading -->                    
 				</div>
-				
-                <!-- Divider -->
-				<div class="hr5" style="margin-top:25px; margin-bottom:45px;"></div>	
-                <div id="reviews" class="row">               
-                    <!-- Start Big Heading -->
-					<div class="big-title text-center">
-                        <h1><strong>Reviews</strong></h1>
-					</div>
-					<!-- End Big Heading -->
-                    
-                    	
-						<!-- Classic Heading -->
-						
-						
-						<!-- Start Testimonials Carousel -->
-						<div class="custom-carousel testimonials-carousel slide touch-carousel" data-appeared-items="1" data-ride="carousel">
-							<!-- Testimonial 1 -->
-							<div class="classic-testimonials item active">
-								<div class="testimonial-content">
-                                    <p><strong>Awesomest application ever [for erasing tweets]!</strong><br/>_</p>
-								</div>
-								<div class="testimonial-author"><span>Abraham Lincoln</span></div>
-							</div>
-							<!-- Testimonial 2 -->
-							<div class="classic-testimonials item">
-								<div class="testimonial-content">
-                                    <p><strong>I have been looking to really delete all my old tweets for a long time and this was the first solution that has actually worked! Many thanks.</strong><br/>_</p>
-								</div>
-								<div class="testimonial-author"><span>Louise</span></div>
-							</div>
-							<!-- Testimonial 3 -->
-							<div class="classic-testimonials item">
-								<div class="testimonial-content">
-                                    <p><strong>[...] The best Tweet deleter I've used :)</strong><br/>_</p>
-								</div>
-								<div class="testimonial-author"><span>Satchmo</span></div>
-							</div>
-                            
-                            <!-- Testimonial 3 -->
-							<div class="classic-testimonials item">
-								<div class="testimonial-content">
-                                    <p><strong>I was wary of downloading anything but after reading the reviews my hopes were officially high and you did not disappoint! you make it so simple while others say it's impossible, and I would of happily paid for such an amazing product that does exactly what is says. basically, thank you so much! 39k tweets going down by the second ^_^</strong></p>
-								</div>
-								<div class="testimonial-author"><span>Anon</span></div>
-							</div>
-						</div>
-						<!-- End Testimonials Carousel -->
-                </div>
-                
                 
 				<div id="downloads" class="row">
 				
@@ -464,7 +386,7 @@
                     <!-- Start Big Heading -->
 					<div class="big-title text-center">
                         <h1><strong>Downloads</strong></h1>
-						<p class="title-desc">If you dont have .NET 4.5, choose the 'setup' version.</p>
+                        <p class="title-desc"><strong>Requirements:</strong> .NET Framework 4.5. (Use the installer version if you don't have this installed)</p>
 					</div>
 					<!-- End Big Heading -->
                     
@@ -474,11 +396,11 @@
                                 <i class="fa fa-download icon-large"></i>
                             </div>
                             <div class="service-content">
-                                <h4>Standalone Version (v5.0)</h4>
+                                <h4>Portable Standalone Version (v5.0)</h4>
                             </div>
                         </a>
                         <div class="service-content">
-                            <p>For most of the cases, the Standalone version is all you need.</p>
+                            <p>This version requires no installation and can be run directly. For most of the cases, the standalone version is all you need.</p>
                         </div>
                     </div>
                     
@@ -492,7 +414,7 @@
                             </div>
                         </a>
                         <div class="service-content">
-                            <p>Download the setup version if you don't have .NET framework installed, or the standalone version is not working for you.</p>
+                            <p>The installer takes care of downloading the required libraries (.NET framework etc.), and installs the application to the start menu.</p>
                         </div>
                     </div>
                     
@@ -540,14 +462,26 @@
 								<div class="panel-body" style="">
                                     <div class="col-md-4"> 
                                         <br/><strong>In this step</strong>, you authenticate your account with Twitter Archive Eraser so that it can delete the tweets you select. This works by providing a PIN number that twitter provides after the authentication. 
-Note: from version 4.0 on, you need to accept sharing several statistics to use Twitter Archive Eraser.
+                                        <br/><br/>
+                                        <i>Note:</i> from version 4.0 on, you need to accept sharing several statistics to use Twitter Archive Eraser.
                                     </div>
                                     
                                     <div class="col-md-8"> 
                                         <!-- Start Touch Slider -->
-                                        <div class="touch-slider" data-slider-navigation="true" data-slider-pagination="true">
-                                            <div class="item"><img alt="" src="images/step1.PNG"></div>
-                                            <div class="item"><img alt="" src="images/step1_sign_in.PNG"></div>
+                                        <div class="touch-slider portfolio-item" data-slider-navigation="true" data-slider-pagination="true">
+                                            <div class="item  portfolio-thumb">
+                                                <a class="lightbox" title="Choose to delete tweets / Favorites / DMs.." href="images/step1.PNG" data-lightbox-gallery="step1" data-lightbox-type="inline">
+                                                    <div class="thumb-overlay"><i class="fa fa-arrows-alt"></i></div>
+                                                    <img alt="" src="images/step1.PNG" />
+                                                </a>
+                                            </div>
+                                            <div class="item portfolio-thumb">
+                                                <a class="lightbox" title="Sign in with Twitter account" href="images/step1_sign_in.PNG" data-lightbox-gallery="step1" data-lightbox-type="inline">
+                                                    <div class="thumb-overlay"><i class="fa fa-arrows-alt"></i></div>
+                                                    <img alt="" src="images/step1_sign_in.PNG" />
+                                                </a>
+
+                                            </div>
                                         </div>
                                         <!-- End Touch Slider -->
                                     </div>
@@ -584,9 +518,20 @@ Select the tweets to delete grouped by months time range. There is no limits on 
                                         </div>
                                     <div class="col-md-6"> 
                                         <!-- Start Touch Slider -->
-                                        <div class="touch-slider" data-slider-navigation="true" data-slider-pagination="true">
-                                            <div class="item"><img alt="" src="images/fetch_favorites.PNG"></div>
-                                            <div class="item"><img alt="" src="images/fetch_dms.png"></div>
+                                        <div class="touch-slider portfolio-item" data-slider-navigation="true" data-slider-pagination="true">
+                                            <div class="item portfolio-thumb">
+                                                <a class="lightbox" title="Retrieve Favorites" href="images/fetch_favorites.PNG" data-lightbox-gallery="step1" data-lightbox-type="inline">
+                                                    <div class="thumb-overlay"><i class="fa fa-arrows-alt"></i></div>
+                                                    <img alt="" src="images/fetch_favorites.PNG" />
+                                                </a>
+                                            </div>
+                                            <div class="item portfolio-thumb">
+                                                <a class="lightbox" title="Retrieve DMs" href="images/fetch_dms.png" data-lightbox-gallery="step1" data-lightbox-type="inline">
+                                                    <div class="thumb-overlay"><i class="fa fa-arrows-alt"></i></div>
+                                                    <img alt="" src="images/fetch_dms.png" />
+                                                </a>
+
+                                            </div>
                                         </div>
                                         <!-- End Touch Slider -->
                                     </div>
@@ -612,10 +557,21 @@ Select the tweets to delete grouped by months time range. There is no limits on 
                                         </div>
                                         <div class="col-md-10"> 
                                             <!-- Start Touch Slider -->
-                                            <div class="touch-slider" data-slider-navigation="true" data-slider-pagination="true">
-                                                <div class="item"><img alt="" src="images/deleted_favorites.PNG"></div>
-                                                <div class="item"><img alt="" src="images/delete_tweets.PNG"></div>
+                                            <div class="touch-slider portfolio-item" data-slider-navigation="true" data-slider-pagination="true">
+                                            <div class="item  portfolio-thumb">
+                                                <a class="lightbox" title="" href="images/delete_tweets.PNG" data-lightbox-gallery="step1" data-lightbox-type="inline">
+                                                    <div class="thumb-overlay"><i class="fa fa-arrows-alt"></i></div>
+                                                    <img alt="" src="images/delete_tweets.PNG" />
+                                                </a>
                                             </div>
+                                            <div class="item portfolio-thumb">
+                                                <a class="lightbox" title="" href="images/deleted_favorites.PNG" data-lightbox-gallery="step1" data-lightbox-type="inline">
+                                                    <div class="thumb-overlay"><i class="fa fa-arrows-alt"></i></div>
+                                                    <img alt="" src="images/deleted_favorites.PNG" />
+                                                </a>
+
+                                            </div>
+                                        </div>
                                             <!-- End Touch Slider -->
                                         </div>
                                         
@@ -677,178 +633,93 @@ Select the tweets to delete grouped by months time range. There is no limits on 
 						<!-- End Toggle -->
                     
                 </div>
+
                 
                 
-				<!-- Divider -->
-				<div class="hr5" style="margin-top:50px; margin-bottom:55px;"></div>
-                
-				<div class="row">
-					
-					<div class="col-md-3">
-						<!-- Start Big Heading -->
-						<div class="big-title">
-							<h1>Our <span class="accent-color">Team</span></h1>
-							<p class="title-desc">We Make Your Smile</p>
-						</div>
-						<!-- End Big Heading -->
-						
-						<!-- Some Text -->
-						<p>Lorem ipsum dolor sit amet, consectetur adi elit, sed do eiusmod tempor incididunt.</p>
-						
-						<!-- Divider -->
-						<div class="hr1" style="margin-bottom:10px;"></div>
-						
-						<!-- Some Text -->
-						<p>Lorem ipsum dolor sit amet, consectetur adi elit, sed do eiusmod tempor incididunt enim labore et dolore magna aliqua. Ut enim nisi minim veniam, quis nostrud exercitation do ullamco laboris nisi ut aliquip ex commodo.</p>
-					</div>
-					
-					<!-- Start Memebr 1 -->
-					<div class="col-md-3 col-sm-6 col-xs-12">
-						<div class="team-member">
-							<!-- Memebr Photo, Name & Position -->
-							<div class="member-photo">
-								<img alt="" src="images/team/face_1.png" />
-								<div class="member-name">John Doe <span>Developer</span></div>
-							</div>
-							<!-- Memebr Words -->
-							<div class="member-info">
-								<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore fugiat.</p>
-							</div>
-							<!-- Memebr Social Links -->
-							<div class="member-socail">
-								<a class="twitter" href="#"><i class="fa fa-twitter"></i></a>
-								<a class="gplus" href="#"><i class="fa fa-google-plus"></i></a>
-								<a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a>
-								<a class="flickr" href="#"><i class="fa fa-flickr"></i></a>
-								<a class="mail" href="#"><i class="fa fa-envelope"></i></a>
-							</div>
-						</div>
-					</div>
-					<!-- End Memebr 1 -->
-					
-					<!-- Start Memebr 2 -->
-					<div class="col-md-3 col-sm-6 col-xs-12">
-						<div class="team-member">
-							<!-- Memebr Photo, Name & Position -->
-							<div class="member-photo">
-								<img alt="" src="images/team/face_2.png" />
-								<div class="member-name">Silly Sally <span>Developer</span></div>
-							</div>
-							<!-- Memebr Words -->
-							<div class="member-info">
-								<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore fugiat.</p>
-							</div>
-							<!-- Memebr Social Links -->
-							<div class="member-socail">
-								<a class="twitter" href="#"><i class="fa fa-twitter"></i></a>
-								<a class="gplus" href="#"><i class="fa fa-google-plus"></i></a>
-								<a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a>
-								<a class="flickr" href="#"><i class="fa fa-flickr"></i></a>
-								<a class="mail" href="#"><i class="fa fa-envelope"></i></a>
-							</div>
-						</div>
-					</div>
-					<!-- End Memebr 2 -->
-					
-					<!-- Start Memebr 3 -->
-					<div class="col-md-3 col-sm-6 col-xs-12">
-						<div class="team-member">
-							<!-- Memebr Photo, Name & Position -->
-							<div class="member-photo">
-								<img alt="" src="images/team/face_3.png" />
-								<div class="member-name">Chris John <span>Developer</span></div>
-							</div>
-							<!-- Memebr Words -->
-							<div class="member-info">
-								<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore fugiat.</p>
-							</div>
-							<!-- Memebr Social Links -->
-							<div class="member-socail">
-								<a class="twitter" href="#"><i class="fa fa-twitter"></i></a>
-								<a class="gplus" href="#"><i class="fa fa-google-plus"></i></a>
-								<a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a>
-								<a class="flickr" href="#"><i class="fa fa-flickr"></i></a>
-								<a class="mail" href="#"><i class="fa fa-envelope"></i></a>
-							</div>
-						</div>
-					</div>
-					<!-- End Memebr 3 -->
-					
-				</div>
-				
-				<!-- Divider -->
-				<div class="hr5" style="margin-top:55px; margin-bottom:55px;"></div>
-				
-				<div class="row">
-                    
-                    
-                    <div class="col-md-3">
-						<!-- Start Big Heading -->
-						<div class="big-title">
-							<h1>Our <span class="accent-color">Clients</span></h1>
-							<p class="title-desc">Partners We Work With</p>
-						</div>
-						<!-- End Big Heading -->
-					</div>
-					
-					<div class="col-md-9">
-						<!--Start Clients Carousel-->
-						<div class="our-clients">
-							<div class="clients-carousel custom-carousel touch-carousel navigation-2" data-appeared-items="4" data-navigation="true">
-								
-								<!-- Client 1 -->
-								<div class="client-item item">
-									<a href="#"><img src="images/c1.png" alt="" /></a>
-								</div>
-								
-								<!-- Client 2 -->
-								<div class="client-item item">
-									<a href="#"><img src="images/c2.png" alt="" /></a>
-								</div>
-								
-								<!-- Client 3 -->
-								<div class="client-item item">
-									<a href="#"><img src="images/c3.png" alt="" /></a>
-								</div>
-								
-								<!-- Client 4 -->
-								<div class="client-item item">
-									<a href="#"><img src="images/c4.png" alt="" /></a>
-								</div>
-								
-								<!-- Client 5 -->
-								<div class="client-item item">
-									<a href="#"><img src="images/c5.png" alt="" /></a>
-								</div>
-								
-								<!-- Client 6 -->
-								<div class="client-item item">
-									<a href="#"><img src="images/c6.png" alt="" /></a>
-								</div>
-								
-								<!-- Client 7 -->
-								<div class="client-item item">
-									<a href="#"><img src="images/c7.png" alt="" /></a>
-								</div>
-								
-								<!-- Client 8 -->
-								<div class="client-item item">
-									<a href="#"><img src="images/c8.png" alt="" /></a>
-								</div>
-								
-							</div>
-						</div>
-						<!--End Clients Carousel-->
-					</div>
-				
-					
-				</div>
-				
+                <div id="reviews" class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <center>
+                            <div class="big-title">
+                                <h1>Step by step <span class="accent-color">Video</span></h1>
+                                <p class="title-desc">(Based on version 4.0)</p>
+                            </div>
+                        </center>
+                        
+                        <iframe src="//www.youtube.com/embed/a01T_WPkQuU?rel=0" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
                 
                 <!-- Divider -->
-				<div class="hr5" style="margin-top:55px; margin-bottom:55px;"></div>
+				<div class="hr5" style="margin-top:25px; margin-bottom:45px;"></div>	
+                <div id="reviews" class="row">               
+                    <!-- Start Big Heading -->
+					<div class="big-title text-center">
+                        <h1><strong>Reviews</strong></h1>
+					</div>
+					<!-- End Big Heading -->
+                    
+                    	
+						<!-- Classic Heading -->
+						
+						
+						<!-- Start Testimonials Carousel -->
+						<div class="custom-carousel testimonials-carousel slide touch-carousel" data-appeared-items="1" data-ride="carousel">
+							<!-- Testimonial 1 -->
+							<div class="classic-testimonials item active">
+								<div class="testimonial-content">
+                                    <p><strong>Awesomest application ever [for erasing tweets]!</strong><br/>_</p>
+								</div>
+								<div class="testimonial-author"><span>Abraham Lincoln</span></div>
+							</div>
+							<!-- Testimonial 2 -->
+							<div class="classic-testimonials item">
+								<div class="testimonial-content">
+                                    <p><strong>I have been looking to really delete all my old tweets for a long time and this was the first solution that has actually worked! Many thanks.</strong><br/>_</p>
+								</div>
+								<div class="testimonial-author"><span>Louise</span></div>
+							</div>
+							<!-- Testimonial 3 -->
+							<div class="classic-testimonials item">
+								<div class="testimonial-content">
+                                    <p><strong>[...] The best Tweet deleter I've used :)</strong><br/>_</p>
+								</div>
+								<div class="testimonial-author"><span>Satchmo</span></div>
+							</div>
+                            
+                            <!-- Testimonial 3 -->
+							<div class="classic-testimonials item">
+								<div class="testimonial-content">
+                                    <p><strong>I was wary of downloading anything but after reading the reviews my hopes were officially high and you did not disappoint! you make it so simple while others say it's impossible, and I would of happily paid for such an amazing product that does exactly what is says. basically, thank you so much! 39k tweets going down by the second ^_^</strong></p>
+								</div>
+								<div class="testimonial-author"><span>Anon</span></div>
+							</div>
+						</div>
+						<!-- End Testimonials Carousel -->
+                </div>
+                
+                <br/>
+                <div class="call-action call-action-boxed call-action-style2 clearfix">
+						<!-- Call Action Button -->
+						<div class="button-side"><a href="#disqus_thread" class="btn-system border-btn btn-medium">Show comments</a></div>
+						<!-- Call Action Text -->
+						<h2 class="primary"><strong>I provide no support</strong> for Twitter Archive Eraser. Please check the FAQ page or ask around in the comments!</h2>
+				</div>
+                
+                <br/>
+                <div class="row">
+                    <div class="big-title">
+                        <h1>Thanks:</h1>
+                        <p class="title-desc">All the Twitter logic is done using the excellent <a href="http://linqtotwitter.codeplex.com/" target="_blank">LinqToTwitter</a> library developed by <a href="https://twitter.com/JoeMayo" target="_blank">@Joe Mayo</a>.</p>
+                    </div>
+                </div>
+                
+                <!-- Divider -->
+				<div class="hr5" style="margin-top:50px; margin-bottom:55px;"></div>
+                
+                
 				
-				<div class="row">
+				<div class="row" id="disqus_thread_container">
                     <!-- LOAD DISQUS WHEN USER SCROLLS DOWN -->
                     
                     <div class="col-md-9">
@@ -862,147 +733,43 @@ Select the tweets to delete grouped by months time range. There is no limits on 
 
 
 		<!-- Start Footer -->
-		<footer>
+		<footer id="contact">
 			<div class="container">
 				<div class="row footer-widgets">
 					
 					<!-- Start Subscribe & Social Links Widget -->
                     <div class="col-md-3">
                         <div class="footer-widget mail-subscribe-widget">
-                            <h4>Get in touch<span class="head-line"></span></h4>
-                            <p>Join our mailing list to stay up to date and get notices about our new releases!</p>
-                            <form class="subscribe">
-                                <input type="text" placeholder="mail@example.com">
-                                <input type="submit" class="main-button" value="Send">
-                            </form>
+                            <h4>Contact<span class="head-line"></span></h4>
+                            <p>This project is maintained by <a href='https://github.com/martani'>Martani Fakhrou</a> (<a href="http://martani.net">http://martani.net</a>)</p>
+                            <img src="http://4.bp.blogspot.com/-HpgkGbXjnk0/T-uICBauwUI/AAAAAAAAEAs/_oKmgFy4H2w/s400/admin@martani.net" style="width:60%"/>
+                            
                         </div>
                         <div class="footer-widget social-widget">
                             <h4>Follow Us<span class="head-line"></span></h4>
                             <ul class="social-icons">
                                 <li>
-                                    <a class="facebook" href="#"><i class="fa fa-facebook"></i></a>
+                                    <a class="twitter" href="http://twitter.com/martani_net"><i class="fa fa-twitter"></i></a>
                                 </li>
                                 <li>
-                                    <a class="twitter" href="#"><i class="fa fa-twitter"></i></a>
+                                    <a class="google" href="https://plus.google.com/103182982567993728984"><i class="fa fa-google-plus"></i></a>
                                 </li>
                                 <li>
-                                    <a class="google" href="#"><i class="fa fa-google-plus"></i></a>
-                                </li>
-                                <li>
-                                    <a class="dribbble" href="#"><i class="fa fa-dribbble"></i></a>
-                                </li>
-                                <li>
-                                    <a class="linkdin" href="#"><i class="fa fa-linkedin"></i></a>
-                                </li>
-                                <li>
-                                    <a class="flickr" href="#"><i class="fa fa-flickr"></i></a>
-                                </li>
-                                <li>
-                                    <a class="tumblr" href="#"><i class="fa fa-tumblr"></i></a>
-                                </li>
-                                <li>
-                                    <a class="instgram" href="#"><i class="fa fa-instagram"></i></a>
-                                </li>
-                                <li>
-                                    <a class="vimeo" href="#"><i class="fa fa-vimeo-square"></i></a>
-                                </li>
-                                <li>
-                                    <a class="skype" href="#"><i class="fa fa-skype"></i></a>
+                                    <a class="linkdin" href="http://www.linkedin.com/in/martani"><i class="fa fa-linkedin"></i></a>
                                 </li>
                             </ul>
                         </div>
                     </div><!-- .col-md-3 -->
                     <!-- End Subscribe & Social Links Widget -->
                     
-                    
-                    <!-- Start Twitter Widget -->
-                    <div class="col-md-3">
-                        <div class="footer-widget twitter-widget">
-                            <h4>Twitter Feed<span class="head-line"></span></h4>
-                            <ul>
-                                <li>
-                                    <p><a href="#">@ithemeslab </a> Lorem ipsum dolor et, consectetur adipiscing eli.</p>
-                                    <span>28 February 2014</span>
-                                </li>
-                                <li>
-                                    <p><a href="#">@ithemeslab </a> Lorem ipsum dolor et, consectetur adipiscing eli.An Fusce eleifend aliquet nis application.</p>
-                                    <span>26 February 2014</span>
-                                </li>
-                                <li>
-                                    <p><a href="#">@ithemeslab </a> Lorem ipsum dolor et, consectetur adipiscing eli.</p>
-                                    <span>28 February 2014</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div><!-- .col-md-3 -->
-                    <!-- End Twitter Widget -->
-
-
-                    <!-- Start Flickr Widget -->
-                    <div class="col-md-3">
-                        <div class="footer-widget flickr-widget">
-                            <h4>Flicker Feed<span class="head-line"></span></h4>
-                            <ul class="flickr-list">
-                                <li>
-                                    <a href="images/flickr-01.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-01.jpg">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/flickr-02.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-02.jpg">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/flickr-03.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-03.jpg">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/flickr-04.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-04.jpg">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/flickr-05.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-05.jpg">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/flickr-06.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-06.jpg">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/flickr-07.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-07.jpg">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/flickr-08.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-08.jpg">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="images/flickr-09.jpg" class="lightbox">
-                                        <img alt="" src="images/flickr-09.jpg">
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div><!-- .col-md-3 -->
-                    <!-- End Flickr Widget -->
-
-                    
                     <!-- Start Contact Widget -->
                     <div class="col-md-3">
                         <div class="footer-widget contact-widget">
-                            <h4><img src="images/footer-margo.png" class="img-responsive" alt="Footer Logo" /></h4>
-                            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
+                            <h4>Twitter archive eraser</h4>
+                            <p>Delete Your Oldest Tweets Using Twitter Archive Eraser</p>
                             <ul>
-                                <li><span>Phone Number:</span> +01 234 567 890</li>
-                                <li><span>Email:</span> company@company.com</li>
-                                <li><span>Website:</span> www.yourdomain.com</li>
+                                <li><span><a href="http://martani.net">http://martani.net</a></span></li>
+                                <li><span><a href="http://twitter.com/martani_net">@martani_net</a></span></li>
                             </ul>
                         </div>
                     </div><!-- .col-md-3 -->
@@ -1015,15 +782,8 @@ Select the tweets to delete grouped by months time range. There is no limits on 
 				<div class="copyright-section">
 					<div class="row">
 						<div class="col-md-6">
-                            <p>&copy; 2014 Margo -  All Rights Reserved <a href="http://graygrids.com">GrayGrids</a> </p>
+                            <p>&copy; HTML Template by <a href="http://graygrids.com" target="_blank">GrayGrids</a> </p>
 						</div>
-						<div class="col-md-6">
-							<ul class="footer-nav">
-								<li><a href="#">Sitemap</a></li>
-								<li><a href="#">Privacy Policy</a></li>
-								<li><a href="#">Contact</a></li>
-							</ul>
-						</div>						
 					</div>
 				</div>
 				<!-- End Copyright -->
@@ -1045,6 +805,60 @@ Select the tweets to delete grouped by months time range. There is no limits on 
 		</div>
 	</div>
 
+    
+    <script type="text/javascript">
+	/* <![CDATA[ */
+			function commafy( num){
+			  var parts = (''+num).split("."), s=parts[0], i=L= s.length, o='',c;
+			  while(i--){ o = (i==0?'':((L-i)%3?'':',')) 
+							  +s.charAt(i) +o }
+			  return o + (parts[1] ? '.' + parts[1] : ''); 
+			}
+
+			jQuery(document).ready(function($) {
+					var counter = 0;
+					$.ajax("http://twitterarchiveeraser.azurewebsites.net/Home/deleted")
+					.done(function( data ) {
+						//alert(data);
+						counter = data;
+						
+						$("#total_deleted").flipCounter(
+							"startAnimation", // scroll counter from the current number to the specified number
+							{
+									number: counter - 5000, // the number we want to scroll from
+									end_number: counter, // the number we want the counter to scroll to
+									easing: jQuery.easing.easeOutQuint, // this easing function to apply to the scroll.
+									duration: 5000, // number of ms animation should take to complete
+									formatNumberOptions:{format:"0,000,000", locale:"us"}
+							}
+						);
+					})
+					  
+					$.ajax("http://twitterarchiveeraser.azurewebsites.net/Home/loaded")
+					.done(function( data ) {
+						//alert(data);				
+						$("#total_loaded").html("And loaded a total of <b>" + commafy(data) + "</b> tweets!");
+					});
+						
+					$("#total_deleted").flipCounter({
+							imagePath:"images/flipCounter-medium.png", // the path to the sprite image relative to your html document
+							digitClass:"counter-digit", // class of the counter digits
+							digitHeight:45, // the height of each digit in the flipCounter-medium.png sprite image
+							digitWidth:30, // the width of each digit in the flipCounter-medium.png sprite image
+							/*number:0, // the initial number the counter should display, overrides the hidden field
+							numIntegralDigits:1, // number of places left of the decimal point to maintain
+							numFractionalDigits:0, // number of places right of the decimal point to maintain
+							counterFieldName:"counter-value", // name of the hidden field
+							easing: false, // the easing function to apply to animations, you can override this with a jQuery.easing method
+							duration:10000, // duration of animations
+							onAnimationStarted:false, // call back for animation upon starting
+							onAnimationStopped:false, // call back for animation upon stopping
+							onAnimationPaused:false, // call back for animation upon pausing
+							onAnimationResumed:false // call back for animation upon resuming from pause*/
+					});            
+			});
+	/* ]]> */
+	</script>
     
     <script type="text/javascript">
     $(function(){

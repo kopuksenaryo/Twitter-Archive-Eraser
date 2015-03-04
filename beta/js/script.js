@@ -447,7 +447,9 @@ $(document).ready(function ($) {
 	
 	$('.lightbox').nivoLightbox({
 		effect: 'fadeScale',
-		keyboardNav: true,
+        theme: 'default',                             // The lightbox theme to use
+        keyboardNav: true,                             // Enable/Disable keyboard navigation (left/right/escape)
+        clickOverlayToClose: true,                    // If false clicking the "close" button will be the only way to close the lightbox
 		errorMessage: 'The requested content cannot be loaded. Please try again later.'
 	});
 	
