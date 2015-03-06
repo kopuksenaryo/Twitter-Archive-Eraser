@@ -3,10 +3,10 @@
 var $ = jQuery.noConflict();
 
 // Page Loader
-$(window).load(function () {
+/*$(window).load(function () {
     "use strict";
 	$('#loader').fadeOut();
-});
+});*/
 
 $(document).ready(function ($) {
 	"use strict";
@@ -21,7 +21,7 @@ $(document).ready(function ($) {
 		var $headerHeight = $('header').height();
 		$('.hidden-header').css({ 'height' : $headerHeight  + "px" });
 	};
-	
+	headerEle();
 	$(window).load(function () {
 	  headerEle();
 	});
