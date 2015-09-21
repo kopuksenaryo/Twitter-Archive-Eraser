@@ -4,7 +4,7 @@
   <description asmv2:iconFile="twitter_alt.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" publicKeyToken="4B2E9D28A3E59FC3" language="neutral" processorArchitecture="amd64" />
     <commandLine file="Twitter Archive Eraser.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -164,13 +164,13 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Twitter Archive Eraser.exe" size="121344">
-      <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" language="neutral" processorArchitecture="amd64" />
+      <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" publicKeyToken="4B2E9D28A3E59FC3" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>zSuK1Z8zdI3kRfykniZ44Sj5Molu1Dppq4o0Qmh3IrM=</dsig:DigestValue>
+        <dsig:DigestValue>PuZCOsSkKvKtLG5DRcwee7gcRoVec1a858nIYJyT9m8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
