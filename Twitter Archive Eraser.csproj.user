@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <PublishUrlHistory>publish\</PublishUrlHistory>
-    <InstallUrlHistory />
+    <PublishUrlHistory>C:\publish\|C:\Users\martani\Documents\GitHub\Twitter-Archive-Eraser2\publish\|publish\</PublishUrlHistory>
+    <InstallUrlHistory>http://martani.github.io/Twitter-Archive-Eraser/publish/|http://martani.github.io/Twitter-Archive-Eraser/</InstallUrlHistory>
     <SupportUrlHistory>http://martani.github.io/Twitter-Archive-Eraser/</SupportUrlHistory>
     <UpdateUrlHistory />
     <BootstrapperUrlHistory />
-    <ErrorReportUrlHistory />
+    <ErrorReportUrlHistory>http://martani.github.io/Twitter-Archive-Eraser/</ErrorReportUrlHistory>
     <FallbackCulture>en-US</FallbackCulture>
-    <VerifyUploadedFiles>false</VerifyUploadedFiles>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <VerifyUploadedFiles>true</VerifyUploadedFiles>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup>
     <EnableSecurityDebugging>false</EnableSecurityDebugging>

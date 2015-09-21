@@ -32,8 +32,10 @@ namespace Twitter_Archive_Eraser
 
         TwitterContext twitterCtx;
         ApplicationSettings.EraseTypes TweetsEraseType;
+        int userFavoritesCount = -1;
 
         Stopwatch stopWatch;
+        
 
         public FetchTweets()
         {
@@ -41,9 +43,8 @@ namespace Twitter_Archive_Eraser
             this.Loaded += FetchTweets_Loaded;
 
             stopWatch = new Stopwatch();
-
-            m_Timer.Elapsed += m_Timer_Elapsed;
             m_Timer.Interval = 1000;
+
             new Thread(DoFetchTweets).Start();
         }
 
@@ -53,7 +54,7 @@ namespace Twitter_Archive_Eraser
             twitterCtx = settings.Context;
             TweetsEraseType = settings.EraseType;
 
-            //this.Title += " v" + settings.Version;
+            Title += " v" + settings.Version;
 
             if(twitterCtx == null)
             {
@@ -74,16 +75,15 @@ namespace Twitter_Archive_Eraser
                          select tweet)
                         .SingleOrDefaultAsync();
 
-                    int totalFavCount = 0;
                     if (user != null)
                     {
-                        totalFavCount = user.FavoritesCount;
+                        userFavoritesCount = user.FavoritesCount;
                     }
 
                     lblTweetsType.Text = "favorites";
                     lblTweetsType2.Text = "favorites";
                     lblTweetsMax.Text = "3000";
-                    lblTotalTweetsNB.Text = string.Format("(Your favorites count: {0})", totalFavCount);
+                    lblTotalTweetsNB.Text = string.Format("(Your favorites count: {0})", userFavoritesCount);
                     break;
                 case ApplicationSettings.EraseTypes.DirectMessages:
                     lblTweetsType.Text = "direct messages";
@@ -104,7 +104,7 @@ namespace Twitter_Archive_Eraser
 
         private void btnFetch_Click(object sender, RoutedEventArgs e)
         {
-            ToggleIsQueryingTwitterFlag();
+            ToggleQueryingTwitter();
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
@@ -123,27 +123,27 @@ namespace Twitter_Archive_Eraser
 
             if (TweetsEraseType == ApplicationSettings.EraseTypes.Favorites)
             {
-                page.tweets.AddRange(favsTweetList.Select(t => new Tweet()
+                page.SetTweetsList(favsTweetList.Select(t => new Tweet()
                 {
                     ID = t.StatusID.ToString(),
                     Username = "@" + t.User.Name,
                     Text = t.Text,
                     ToErase = true,
                     Type = TweetType.Favorite,
-                    Date = t.CreatedAt
+                    Date = DateTime.SpecifyKind(t.CreatedAt, DateTimeKind.Local)
                 }));
             }
 
             if(TweetsEraseType == ApplicationSettings.EraseTypes.DirectMessages)
             {
-                page.tweets.AddRange(dmsTweetList.Select(t => new Tweet()
+                page.SetTweetsList(dmsTweetList.Select(t => new Tweet()
                 {
                     ID = t.IDResponse.ToString(),
                     Username = t.Type == DirectMessageType.SentBy ? "[To] @" + t.RecipientScreenName : "[From] @" + t.SenderScreenName,
                     Text = t.Text,
                     ToErase = true,
                     Type = TweetType.DM,
-                    Date = t.CreatedAt
+                    Date = DateTime.SpecifyKind(t.CreatedAt, DateTimeKind.Local)
                 }));
             }
 
@@ -165,21 +165,36 @@ namespace Twitter_Archive_Eraser
             this.Show();
         }
 
-        void ToggleIsQueryingTwitterFlag()
+        void Set_QueryingTwitter()
         {
-            isQueryingTwitter = !isQueryingTwitter;
+            isQueryingTwitter = true;
             btnFetchTxt.Dispatcher.BeginInvoke(new Action(delegate()
             {
-                btnFetchTxt.Text = isQueryingTwitter ? "Stop" : "Start";
-                if(isQueryingTwitter)
-                {
-                    stopWatch.Start();
-                }
-                else
-                {
-                    stopWatch.Stop();
-                }
+                btnFetchTxt.Text = "Stop";
+                stopWatch.Start();
             }));
+        }
+
+        void Unset_QueryingTwitter()
+        {
+            isQueryingTwitter = false;
+            btnFetchTxt.Dispatcher.BeginInvoke(new Action(delegate ()
+            {
+                btnFetchTxt.Text = "Start";
+                stopWatch.Stop();
+            }));
+        }
+
+        void ToggleQueryingTwitter()
+        {
+            if(isQueryingTwitter)
+            {
+                Unset_QueryingTwitter();
+            }
+            else
+            {
+                Set_QueryingTwitter();
+            }
         }
 
         void StopProgressStatus()
@@ -202,11 +217,13 @@ namespace Twitter_Archive_Eraser
 
         void DoFetchTweets()
         {
-            ulong sinceID = 1;
-            ulong maxID = 0;
+            ulong maxID_favs = 0;
+            ulong maxID_DM_sent = 0;
+            ulong maxID_DM_received = 0;
 
             List<Favorites> favsResponse = new List<Favorites>();
-            List<DirectMessage> dmsResponse = new List<DirectMessage>();
+            List<DirectMessage> sentDMsResponse = new List<DirectMessage>();
+            List<DirectMessage> receivedDMsResponse = new List<DirectMessage>();
 
             while (true)
             {
@@ -231,18 +248,30 @@ namespace Twitter_Archive_Eraser
 
                     StartProgressStatus();
 
+                    // Check if we are hitting rate limits
+                    if(ReachedTwitterLimits(TweetsEraseType, out RateLimitReset))
+                    {
+                        RateLimitReset = RateLimitReset.AddSeconds(15); // Add some seconds to avoid querying too soon
+                        HandleReachedTwitterLimits();
+                        break;
+                    }
+
                     try
                     {
-                        switch (this.TweetsEraseType)
+                        switch (TweetsEraseType)
                         {
                             case ApplicationSettings.EraseTypes.TweetsAndRetweets:
                                 throw new Exception("EraseTye should never be EraseTypes.TweetsAndRetweets here");
                                 break;
                             case ApplicationSettings.EraseTypes.Favorites:
-                                favsResponse = QueryFavorites(twitterCtx, sinceID, maxID);
+                                favsResponse.Clear();
+                                favsResponse = QueryFavorites(twitterCtx, maxID_favs);
                                 break;
                             case ApplicationSettings.EraseTypes.DirectMessages:
-                                dmsResponse = QueryDMs(twitterCtx, sinceID, maxID);
+                                sentDMsResponse.Clear();
+                                receivedDMsResponse.Clear();
+                                sentDMsResponse = QuerySentDMs(twitterCtx, maxID_DM_sent);
+                                receivedDMsResponse = QueryReceivedDMs(twitterCtx, maxID_DM_received);
                                 break;
                             default:
                                 break;
@@ -252,40 +281,42 @@ namespace Twitter_Archive_Eraser
                     {
                         if (twitterCtx.RateLimitRemaining == 0)
                         {
-                            RateLimitReset = FromUnixTime(twitterCtx.RateLimitReset);
                             HandleReachedTwitterLimits();
                         }
                         else
                         {
-                            this.Dispatcher.BeginInvoke(new Action(delegate()
+                            Dispatcher.BeginInvoke(new Action(delegate()
                             {
                                 MessageBox.Show(ex.Message);
                             }));
                         }
 
-                        ToggleIsQueryingTwitterFlag();
+                        Unset_QueryingTwitter();
                         break;
                     }
 
                     // fetched all the favorites
-                    if ((TweetsEraseType == ApplicationSettings.EraseTypes.Favorites && (favsResponse == null || favsResponse.Count == 0))
-                        || (TweetsEraseType == ApplicationSettings.EraseTypes.DirectMessages && (dmsResponse == null || dmsResponse.Count == 0)))
+                    bool reachedFavsLimitsOrNoMoreFavs = (favsResponse == null || favsResponse.Count == 0 || favsTweetList.Count == userFavoritesCount);
+                    bool noMoreDms = (sentDMsResponse == null || sentDMsResponse.Count == 0) && (receivedDMsResponse == null || receivedDMsResponse.Count == 0);
+
+                    if ((TweetsEraseType == ApplicationSettings.EraseTypes.Favorites && reachedFavsLimitsOrNoMoreFavs)
+                        || (TweetsEraseType == ApplicationSettings.EraseTypes.DirectMessages && noMoreDms))
                     {
-                        lblContinue.Dispatcher.BeginInvoke(new Action(delegate()
+                        lblContinue.Dispatcher.BeginInvoke(new Action(delegate ()
                         {
                             lblContinue.Text = "Done fetching tweets!. Please click 'Next' to go to the filter & delete page.";
                             lblContinue.Visibility = System.Windows.Visibility.Visible;
                             stackReachedLimits.Visibility = System.Windows.Visibility.Collapsed;
                         }));
 
-                        ToggleIsQueryingTwitterFlag();
+                        Unset_QueryingTwitter();
                         break;
                     }
 
                     // query next batch
                     if (TweetsEraseType == ApplicationSettings.EraseTypes.Favorites)
                     {
-                        maxID = favsResponse.Min(fav => fav.StatusID) - 1;
+                        maxID_favs = favsResponse.Min(fav => fav.StatusID) - 1;
                         favsTweetList.AddRange(favsResponse);
                         UpdateNumFetchedTweets(favsTweetList.Count);
 
@@ -294,23 +325,70 @@ namespace Twitter_Archive_Eraser
 
                     if (TweetsEraseType == ApplicationSettings.EraseTypes.DirectMessages)
                     {
-                        maxID = dmsResponse.Min(dm => dm.IDResponse) - 1;
-                        dmsTweetList.AddRange(dmsResponse);
+                        maxID_DM_sent = sentDMsResponse.Min(dm => dm.IDResponse) - 1;
+                        maxID_DM_received = receivedDMsResponse.Min(dm => dm.IDResponse) - 1;
+
+                        dmsTweetList.AddRange(sentDMsResponse);
+                        dmsTweetList.AddRange(receivedDMsResponse);
+
                         UpdateNumFetchedTweets(dmsTweetList.Count);
 
-                        shouldContinue = dmsResponse.Count > 0;
+                        shouldContinue = sentDMsResponse.Count > 0 || receivedDMsResponse.Count > 0;
                     }
 
                 } while (shouldContinue);
             }
         }
 
-        List<Favorites> QueryFavorites(TwitterContext ctx, ulong sinceID, ulong maxID)
+        private bool ReachedTwitterLimits(ApplicationSettings.EraseTypes tweetsEraseType, out DateTime rateLimitReset)
+        {
+            var helpResponse =
+                (from help in twitterCtx.Help
+                     where help.Type == HelpType.RateLimits
+                     select help)
+                    .SingleOrDefault();
+
+            if(helpResponse == null)
+            {
+                // fail quickly, assume limits are hit
+                rateLimitReset = DateTime.Now.AddSeconds(15);   // retry in 15 seconds
+
+                return true;
+            }
+
+            var favsRemainingLimits = helpResponse.RateLimits["favorites"].Where(limit => limit.Resource.ToLowerInvariant() == "/favorites/list").FirstOrDefault();
+            var sentDMsRemainingLimits = helpResponse.RateLimits["direct_messages"].Where(limit => limit.Resource.ToLowerInvariant() == "/direct_messages/sent").FirstOrDefault();
+            var receivedDMsRemainingLimits = helpResponse.RateLimits["direct_messages"].Where(limit => limit.Resource.ToLowerInvariant() == "/direct_messages").FirstOrDefault();
+
+            // The following is OK since the app works only in one given mode: either fetching favorites or DMs
+            if(favsRemainingLimits.Remaining == 0)
+            {
+                rateLimitReset = FromUnixTime(favsRemainingLimits.Reset);
+                return true;
+            }
+
+            if (sentDMsRemainingLimits.Remaining == 0)
+            {
+                rateLimitReset = FromUnixTime(sentDMsRemainingLimits.Reset);
+                return true;
+            }
+
+            if (receivedDMsRemainingLimits.Remaining == 0)
+            {
+                rateLimitReset = FromUnixTime(receivedDMsRemainingLimits.Reset);
+                return true;
+            }
+
+            rateLimitReset = DateTime.UtcNow;
+            return false;
+        }
+
+        List<Favorites> QueryFavorites(TwitterContext ctx, ulong maxID)
         {
             const int PerQueryCount = 200;
 
             List<Favorites> result = new List<Favorites>();
-            if (sinceID <= 1 && maxID <= 1)
+            if (maxID <= 1)
             {
                 result = ctx.Favorites
                             .Where(fav => fav.Type == FavoritesType.Favorites &&
@@ -323,44 +401,52 @@ namespace Twitter_Archive_Eraser
                             .Where(fav => fav.Type == FavoritesType.Favorites &&
                                    fav.Count == PerQueryCount &&
                                    fav.IncludeEntities == false &&
-                                   fav.SinceID == sinceID &&
                                    fav.MaxID == maxID).ToList();
             }
 
             return result;
         }
 
-        List<DirectMessage> QueryDMs(TwitterContext ctx, ulong sinceID, ulong maxID)
+        List<DirectMessage> QuerySentDMs(TwitterContext ctx, ulong maxID)
         {
             const int PerQueryCount = 200;
 
             List<DirectMessage> result = new List<DirectMessage>();
-            if (sinceID <= 1 && maxID <= 1)
+            if (maxID <= 1)
             {
                 result = ctx.DirectMessage
                             .Where(dm => dm.Type == DirectMessageType.SentBy &&
                                          dm.Count == PerQueryCount &&
                                          dm.IncludeEntities == false).ToList();
-
-                result.AddRange(ctx.DirectMessage.Where(dm => dm.Type == DirectMessageType.SentTo &&
-                                         dm.Count == PerQueryCount &&
-                                         dm.IncludeEntities == false).ToList());
             }
             else
             {
                 result = ctx.DirectMessage.Where(dm => dm.Type == DirectMessageType.SentBy &&
                                                        dm.Count == PerQueryCount &&
                                                        dm.IncludeEntities == false &&
-                                                       dm.SinceID == sinceID &&
                                                        dm.MaxID == maxID).ToList();
+            }
 
-                // TODO: Will potentially miss DMs since we are sharing the same 'MaxID' for Sent and Received DMs
-                // No need to request these, only first 200 (returned in in above call) are returned
-                result.AddRange(ctx.DirectMessage.Where(dm => dm.Type == DirectMessageType.SentTo &&
+            return result;
+        }
+
+        List<DirectMessage> QueryReceivedDMs(TwitterContext ctx, ulong maxID)
+        {
+            const int PerQueryCount = 200;
+
+            List<DirectMessage> result = new List<DirectMessage>();
+            if (maxID <= 1)
+            {
+                result = ctx.DirectMessage.Where(dm => dm.Type == DirectMessageType.SentTo &&
+                                         dm.Count == PerQueryCount &&
+                                         dm.IncludeEntities == false).ToList();
+            }
+            else
+            {
+                result = ctx.DirectMessage.Where(dm => dm.Type == DirectMessageType.SentTo &&
                                                                dm.Count == PerQueryCount &&
                                                                dm.IncludeEntities == false &&
-                                                               dm.SinceID == sinceID &&
-                                                               dm.MaxID == maxID).ToList());
+                                                               dm.MaxID == maxID).ToList();
             }
 
             return result;
@@ -374,7 +460,7 @@ namespace Twitter_Archive_Eraser
             }));
         }
 
-        public static DateTime FromUnixTime(long unixTime)
+        public static DateTime FromUnixTime(ulong unixTime)
         {
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             return epoch.AddSeconds(unixTime);
@@ -393,40 +479,56 @@ namespace Twitter_Archive_Eraser
 
         void HandleReachedTwitterLimits()
         {
+            Unset_QueryingTwitter();
             StopProgressStatus();
+            EnableRateLimitTimer();
 
-            SetupTimer();
+            // disable querying for new tweets since we hit rate limit anyways
+            btnFetch.Dispatcher.BeginInvoke(new Action(delegate ()
+             {
+                 btnFetch.IsEnabled = false;
+             }));
         }
 
-        void SetupTimer()
+        void EnableRateLimitTimer()
         {
+            m_Timer.Elapsed += m_Timer_Elapsed;
             m_Timer.Enabled = true;
         }
 
-        private void DisableTimer()
+        private void DisableRateLimitTimer()
         {
+            m_Timer.Elapsed -= m_Timer_Elapsed;
             m_Timer.Enabled = false;
         }
 
         void m_Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            var timer = sender as System.Timers.Timer;
+            if (timer != null && timer.Enabled == false)
+            {
+                return;
+            }
+
             var diff = RateLimitReset.Subtract(DateTime.UtcNow);
             var minutes = (int)diff.TotalMinutes;
             var seconds = diff.Seconds;
 
-            if(seconds < 1)
+            if(diff.TotalMilliseconds < 1)
             {
-                DisableTimer();
+                DisableRateLimitTimer();
 
                 lblRemainingTime.Dispatcher.BeginInvoke(new Action(delegate()
                 {
                     stackReachedLimits.Visibility = System.Windows.Visibility.Collapsed;
                     lblContinue.Visibility = System.Windows.Visibility.Visible;
                     lblRemainingTime.Text = string.Format("{0}min & {1}sec", minutes, seconds);
+
+                    btnFetch.IsEnabled = true;
                 }));
 
                 // there are more tweets to fetch
-                ToggleIsQueryingTwitterFlag();
+                Set_QueryingTwitter();
                 return;
             }
 

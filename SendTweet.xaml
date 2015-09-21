@@ -38,7 +38,7 @@
         <StackPanel>
             <TextBlock FontSize="32" HorizontalAlignment="Center" Foreground="#FF03760D">Done! Everything is clean ;)</TextBlock>
             <TextBlock FontSize="18" Margin="0 30 0 5">Share the love? Tweet this to your followers:</TextBlock>
-            <Border BorderThickness="0" BorderBrush="#FF0B5BE8" Margin="5">
+            <Border BorderThickness="0" BorderBrush="#FF0B5BE8" Margin="5" Name="txtTweetTextParent">
                 <TextBox Name="txtTweetText" Margin="0" Padding="0 5" FontSize="20" TextWrapping="Wrap">Just deleted {0} tweets using Twitter Archive Eraser (XX mins &amp; YY seconds). Check it out here http://martani.github.io/Twitter-Archive-Eraser/</TextBox>
             </Border>
 
@@ -58,14 +58,14 @@
                 <Button Name="btnNo" 
                     Margin="0,10,0,10" 
                     Height="28" 
-                    FontWeight="Bold" 
+                    FontWeight="Normal" 
                     IsEnabled="True"
-                    Click="btnNo_Click"  Width="108" Opacity="0.5" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                    Click="btnNo_Click"  Width="108" Opacity="0.7" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
                     No thanks
                 </Button>
             </StackPanel>
 
-            <TextBlock Name="txtTweetUpdateStatus" FontSize="16" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Name="txtTweetUpdateStatus" FontSize="16" HorizontalAlignment="Center" Margin="0 -14"></TextBlock>
         </StackPanel>
     </Grid>
 </Window>

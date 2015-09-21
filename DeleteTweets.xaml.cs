@@ -27,8 +27,8 @@ namespace Twitter_Archive_Eraser
     /// </summary>
     public partial class DeleteTweets : Window
     {
-        public ObservableRangeCollection<Tweet> tweets = new ObservableRangeCollection<Tweet>();
-        ObservableRangeCollection<tweetTJson> notDeletedTweets = new ObservableRangeCollection<tweetTJson>();
+        private ObservableRangeCollection<Tweet> mTweetsCollection = new ObservableRangeCollection<Tweet>();
+        List<JsonTweet> notDeletedTweets = new List<JsonTweet>();
         string notDeletedTweetsFilename = Directory.GetCurrentDirectory() + "\\not_erased_tweets.js";
         public bool areTweetsFetchedThroughAPI = false;
         
@@ -41,8 +41,8 @@ namespace Twitter_Archive_Eraser
         ApplicationSettings.EraseTypes TweetsEraseType = appSettings.EraseType;
 
         bool hitReturn = false;
-        bool isErasing = false;
-        bool isFilterView = false;
+        bool isCurrentlyErasing = false;
+        bool isFilterViewActive = false;
 
         const string STATUS_DELETED = "[DELETED ✔]";
         const string STATUS_NOT_FOUND = "[NOT FOUND ǃ]";
@@ -67,8 +67,6 @@ namespace Twitter_Archive_Eraser
 
         void DeleteTweets_Loaded(object sender, RoutedEventArgs e)
         {
-            //this.Title += " v" + ApplicationSettings.GetApplicationSettings().Version;
-
             // Show/Hide options depending on what the user wants to delete
             var settings = ApplicationSettings.GetApplicationSettings();
             switch (settings.EraseType)
@@ -86,29 +84,47 @@ namespace Twitter_Archive_Eraser
             }
 
             startTime = DateTime.Now;
-            new Thread(LoadTweets).Start();
+            new Thread(LoadTweetsFromJsFiles).Start();
             //Thread.CurrentThread.CurrentCulture = new CultureInfo("es-PE"); 
 
+            // Hide DM sender/receiver column when deleting tweets/favorites
             var column = gridTweets.Columns.Where(c => c.FieldName == "Username").FirstOrDefault();
             if(column != null && TweetsEraseType == ApplicationSettings.EraseTypes.TweetsAndRetweets) 
             {
                 column.Visible = false;
             }
+
+            // Hide extra ToErase column. When providing a custom template for that field, the grid view choses to add it anywyas
+            column = gridTweets.Columns.Where(c => c.FieldName == "ToErase").FirstOrDefault();
+            if (column != null)
+            {
+                column.Visible = false;
+            }
         }
 
-        private void LoadTweets()
+        private void RunOnUIThread(Action action)
         {
-            gridTweets.Dispatcher.BeginInvoke(new Action(delegate()
+            Dispatcher.BeginInvoke(action);
+        }
+
+        public void SetTweetsList(IEnumerable<Tweet> input)
+        {
+            mTweetsCollection.AddRange(input);
+        }
+
+        private void LoadTweetsFromJsFiles()
+        {
+            RunOnUIThread(delegate()
             {
                 gridTweets.ItemsSource = null;
                 gridOverlayLoading.Visibility = System.Windows.Visibility.Visible;
                 gridContainer.IsEnabled = false;
-            }));
-
+            });
+            
             tweetsCollectionView = null;
-            notDeletedTweets = new ObservableRangeCollection<tweetTJson>();
+            notDeletedTweets = new List<JsonTweet>();
 
-            // Called should assign those tweets to 'ObservableRangeCollection<Tweet> tweets' directly
+            // If caller already assigned the list of tweets
             if (areTweetsFetchedThroughAPI)
             {
                 ;
@@ -124,111 +140,35 @@ namespace Twitter_Archive_Eraser
 
                 foreach (JsFile jsFile in jsFiles)
                 {
-                    tweets.AddRange(GetTweetsFromFile(jsFile));
+                    RunOnUIThread(delegate()
+                    {
+                        txtFeedback.Text += "\nLoading tweets: " + jsFile.FriendlyFilename + " " + jsFile.Year;
+                    });
+
+                    mTweetsCollection.AddRange(jsFile.ExtractTweets());
                 }
             }
 
-            txtFeedback.Dispatcher.BeginInvoke(new Action(delegate()
+            RunOnUIThread(delegate()
             {
                 txtFeedback.Text += "\nDone!";
-            }));
-
-            tweets.OrderBy(t => t.Date);
-            tweetsCollectionView = CollectionViewSource.GetDefaultView(tweets);
-            tweetsCollectionView.GroupDescriptions.Add(new PropertyGroupDescription("YearMonth"));
-            // tweetsCollectionView.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
-
-            gridTweets.Dispatcher.BeginInvoke(new Action(delegate()
-            {
-                gridTweets.ItemsSource = tweetsCollectionView;
-                //gridTweets.AutoScrollCurrentItem = Xceed.Wpf.DataGrid.AutoScrollCurrentItemTriggers.CurrentChanged;
-                gridTweets.ItemScrollingBehavior = Xceed.Wpf.DataGrid.ItemScrollingBehavior.Deferred;
-
-                gridContainer.IsEnabled = true;
-                txtTotalTweetsNB.Text = String.Format("(Total tweets: {0})", tweets.Count);
-                gridOverlayLoading.Visibility = System.Windows.Visibility.Hidden;
-            }));
-        }
-
-
-        List<Tweet> GetTweetsFromFile(JsFile jsFile)
-        {
-            txtFeedback.Dispatcher.BeginInvoke(new Action(delegate()
-            {
-                txtFeedback.Text += "\nLoading tweets: " + jsFile.FriendlyFilename + " " + jsFile.TweetYear;
-            }));
-
-            string jsonData = "";
-
-            // Case of js file
-            if(String.IsNullOrEmpty(jsFile.OriginZipFile))
-            {
-                jsonData = File.ReadAllText(jsFile.Path);
-            }
-            else
-	        {
-                if (!File.Exists(jsFile.OriginZipFile))
-                    return null;
-
-                try
-                {
-                    using (ZipFile zipArchive = ZipFile.Read(jsFile.OriginZipFile))
-                    {
-                        MemoryStream stream = new MemoryStream();
-                        ZipEntry jsonFile = zipArchive[jsFile.Path];
-                        jsonFile.Extract(stream);
-                        stream.Position = 0;
-                        using (var reader = new StreamReader(stream))
-                        {
-                            jsonData = reader.ReadToEnd();
-                        }
-                    }   
-                }
-                catch (Exception)   //file is not a suitable json
-                {
-                    ;
-                }
-            }
-
-            jsonData = jsonData.Substring(jsonData.IndexOf('[') <= 0 ? 0 : jsonData.IndexOf('[') - 1);
-            return LoadTweetsFromJson(jsonData);
-        }
-        
-        List<Tweet> LoadTweetsFromJson(string jsonData)
-        {
-            List<tweetTJson> tweets = JsonConvert.DeserializeObject<List<tweetTJson>>(jsonData);
-            if (tweets == null)
-                return null;
-            
-            List<Tweet> result = new List<Tweet>();
-            tweets.ForEach(t => 
-            {             
-                result.Add(new Tweet { 
-                                            ID = t.id_str, 
-                                            Text = t.text,
-                                            Type = t.retweeted_status != null ? TweetType.Retweet : TweetType.Tweet,
-                                            ToErase = true, 
-                                            Status = "", 
-                                            Date = ParseDateTime(t.created_at)
-                });
             });
 
-            return result;
-        }
+            mTweetsCollection.OrderBy(t => t.Date);
+            
+            tweetsCollectionView = CollectionViewSource.GetDefaultView(mTweetsCollection);
+            tweetsCollectionView.GroupDescriptions.Add(new PropertyGroupDescription("YearAndMonth"));
+            // tweetsCollectionView.GroupDescriptions.Add(new PropertyGroupDescription("Type"));
 
-        DateTime ParseDateTime(string str)
-        {
-            string datePattern = "yyyy-MM-dd H:m:s zzz";
-                               //"2013-06-06 00:16:40 +0000"
-
-            DateTimeOffset dto;
-            //We use this to prevent the app from crashing if twitter changes the date-time format, again!
-            if (DateTimeOffset.TryParseExact(str, datePattern, CultureInfo.InvariantCulture, DateTimeStyles.None, out dto))
+            RunOnUIThread(delegate()
             {
-                return dto.DateTime;
-            }
+                gridTweets.ItemsSource = tweetsCollectionView;
+                gridTweets.ItemScrollingBehavior = ItemScrollingBehavior.Deferred;
 
-            return DateTime.MinValue;
+                gridContainer.IsEnabled = true;
+                txtTotalTweetsNB.Text = string.Format("(Total tweets: {0})", mTweetsCollection.Count);
+                gridOverlayLoading.Visibility = Visibility.Hidden;
+            });
         }
 
         private void DG_Hyperlink_Click(object sender, RoutedEventArgs e)
@@ -244,7 +184,13 @@ namespace Twitter_Archive_Eraser
             Process.Start(url);
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        private void btnBack_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
             hitReturn = true;
@@ -253,32 +199,33 @@ namespace Twitter_Archive_Eraser
 
         private void Window_Closing_1(object sender, CancelEventArgs e)
         {
-            cancellationSource.Cancel();
+            globalCancellationSource.Cancel();
             WebUtils.ReportStats(appSettings.Username,
                                     appSettings.SessionId.ToString(),
                                     appSettings.EraseType.ToString(),
-                                    tweets.Count,
-                                    tweets.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count(),
-                                    tweets.Where(t => String.Equals(t.Status, STATUS_NOT_FOUND)).Count(),
-                                    tweets.Where(t => String.Equals(t.Status, STATUS_ERROR)).Count(),
-                                    tweets.Where(t => String.Equals(t.Status, STATUS_NOT_ALLOWED)).Count(),
+                                    mTweetsCollection.Count,
+                                    mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count(),
+                                    mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_NOT_FOUND)).Count(),
+                                    mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_ERROR)).Count(),
+                                    mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_NOT_ALLOWED)).Count(),
                                     false,
                                     (int)sliderParallelConnections.Value,
                                     filters,
                                     (DateTime.Now - startTime).TotalSeconds);    
 
+            // if user didn't hit the return button, this is a legit exit
             if (!hitReturn)
                 Environment.Exit(0);
         }
 
-        void DisableControls()
+        void SetDeletionInProgressState()
         {
             //Could be called from a different thread
-            btnEraseTweetsLabel.Dispatcher.BeginInvoke(new Action(delegate()
+            RunOnUIThread(delegate()
             {
                 btnEraseTweetsLabel.Text = "Stop";
 
-                stackProgress.Visibility = System.Windows.Visibility.Visible;
+                stackProgress.Visibility = Visibility.Visible;
                 progressBar2.IsIndeterminate = true;
                 btnBack.IsEnabled = false;
 
@@ -286,16 +233,17 @@ namespace Twitter_Archive_Eraser
                 grpParallelConnections.IsEnabled = false;
 
                 runningTime.Start();
-            }));
+            });
         }
 
-        void EnableControls()
+        void SetStoppedDeletionState()
         {
-            btnEraseTweetsLabel.Dispatcher.BeginInvoke(new Action(delegate()
+            RunOnUIThread(delegate()
             {
                 btnEraseTweetsLabel.Text = "Erase selected tweets";
                 btnEraseTweets.IsEnabled = true;
 
+                // can go back to select archive files, no back to fetch favs/DMs
                 if (appSettings.EraseType == ApplicationSettings.EraseTypes.TweetsAndRetweets)
                 {
                     btnBack.IsEnabled = true;
@@ -307,32 +255,31 @@ namespace Twitter_Archive_Eraser
                 progressBar2.IsIndeterminate = false;
 
                 runningTime.Stop();
-            }));
-
-            // This is called after all tasks are canceled, should renew cacelation token
-            cancellationSource = new CancellationTokenSource();
+            });
         }
 
+        // Trigger start/pause deletion of tweets
         private void btnEraseTweets_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
 
-            if (isFilterView)
+            if (isFilterViewActive)
             {
                 MessageBox.Show("You are viewing only a subset of tweets. Please click 'Show all/Reset filter' button to show all the tweets first.", "Twitter Archive Eraser");
                 return;
             }
 
-            if (!isErasing)
+            if (!isCurrentlyErasing)
             {
                 if (MessageBox.Show("Are you sure you want to delete all the selected tweets.\nThis cannot be undone!", "Twitter Archive Eraser",
                                     MessageBoxButton.OKCancel, MessageBoxImage.Warning)
                     == MessageBoxResult.OK)
                 {
-                    new Thread(StartTwitterErase).Start((int)sliderParallelConnections.Value);
-                    isErasing = true;
+                    isCurrentlyErasing = true;
+                    SetDeletionInProgressState();
 
-                    DisableControls();
+                    int nbParallel = (int)sliderParallelConnections.Value;
+                    Task.Factory.StartNew(() => StartTwitterErase(nbParallel));
                 }
             }
             else
@@ -341,44 +288,12 @@ namespace Twitter_Archive_Eraser
                                     MessageBoxButton.OKCancel, MessageBoxImage.Warning)
                     == MessageBoxResult.OK)
                 {
-                    cancellationSource.Cancel();
-                    isErasing = false;
-
+                    //isErasing = false;
+                    globalCancellationSource.Cancel();
                     btnEraseTweets.IsEnabled = false;
                     btnEraseTweetsLabel.Text = "Stopping...";
                 }
             }
-        }
-
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
-        }
-
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
-        {
-            //CollectionViewSource tweetsDataView = this.Resources["tweetsDataView"] as CollectionViewSource;
-            ApplyFilterToCollectionView();
-            isFilterView = true;
-        }
-
-        private void btnClear_Click(object sender, RoutedEventArgs e)
-        {
-            tweetsCollectionView.Filter = t => { return true; };
-            tweetsCollectionView.Refresh();
-            isFilterView = false;
-
-            filterShowRetweetsOnly = false;
-            chkShowRetweetOnly.IsChecked = false;
-            txtFilterTweets.Text = "";
-        }
-
-        void ShowShareTweetDialog(int numTweetsDeleted)
-        {
-            appSettings.NumTeetsDeleted = numTweetsDeleted;
-            SendTweet sendTweetWindow = new SendTweet();
-            sendTweetWindow.ShowDialog();
         }
 
         #region Erasing Tweets Logic
@@ -387,13 +302,13 @@ namespace Twitter_Archive_Eraser
         int nextTweetID = 0;
         Object _lockerNextTweetID = new Object();
 
-        int nbTweetsDeleted = 0;
-        Object _lockerNbTweetsDeleted = new Object();
+        // modified only using atomic Interlocked operations
+        int nbOutstandingOperations = 0;
 
         Object _lockerNotDeletedTweetsLst = new Object();
 
         //In case of a cancelation
-        CancellationTokenSource cancellationSource = new CancellationTokenSource();
+        CancellationTokenSource globalCancellationSource = new CancellationTokenSource();
 
         //The number of the tweets to erase
         int nbTweetsToErase;
@@ -405,12 +320,10 @@ namespace Twitter_Archive_Eraser
         long lastDataGridScroll = 0;
         object _lockerLastDataGridScroll = new object();
         const int MIN_SCROLL_INTERVAL = 5;
-        void onDeletingTweetUIUpdate(Tweet tweet)
+
+        void onDeletedTweetUIUpdate(Tweet tweet)
         {
-            lock (_lockerNbTweetsDeleted)
-            {
-                nbTweetsDeleted++;
-            }
+            Interlocked.Decrement(ref nbOutstandingOperations);
 
             // scroll only after X seconds
             if (DateTime.Now.Ticks - lastDataGridScroll > (TimeSpan.TicksPerSecond * MIN_SCROLL_INTERVAL))
@@ -420,12 +333,11 @@ namespace Twitter_Archive_Eraser
                     if (DateTime.Now.Ticks - lastDataGridScroll > (TimeSpan.TicksPerSecond * MIN_SCROLL_INTERVAL))
                     {
                         //update datagrid
-                        gridTweets.Dispatcher.BeginInvoke(new Action(delegate()
+                        RunOnUIThread(delegate()
                         {
                             gridTweets.SelectedItem = tweet;
                             gridTweets.BringItemIntoView(tweet);
-                            //gridTweets.ScrollIntoView(tweet);
-                        }));
+                        });
 
                         lastDataGridScroll = DateTime.Now.Ticks;
                     }
@@ -433,11 +345,11 @@ namespace Twitter_Archive_Eraser
             }
 
             //update progressbar
-            progressBar.Dispatcher.BeginInvoke(new Action(delegate()
+            RunOnUIThread(delegate()
             {
-                progressBar.Value = nbTweetsDeleted * 100 / nbTweetsToErase;
-                txtPrcnt.Text = nbTweetsDeleted * 100 / nbTweetsToErase + "%";
-            }));
+                progressBar.Value = 100 - (nbOutstandingOperations * 100 / nbTweetsToErase);
+                txtPrcnt.Text = 100 - (nbOutstandingOperations * 100 / nbTweetsToErase) + "%";
+            });
         }
 
         //Fetched the index (in the tweets collection) of the next tweet to be deleted
@@ -447,14 +359,17 @@ namespace Twitter_Archive_Eraser
             lock (_lockerNextTweetID)
             {
                 //As long as we have more tweets to erase
-                while (nextTweetID < tweets.Count 
-                       && (tweets[nextTweetID].ToErase == false || !String.IsNullOrEmpty(tweets[nextTweetID].Status)))
+                while (nextTweetID < mTweetsCollection.Count &&/* didnt hit end of collection */
+                      (
+                      mTweetsCollection[nextTweetID].ToErase == false /* skip this tweet */ 
+                      || !string.IsNullOrEmpty(mTweetsCollection[nextTweetID].Status) /* already tried to delete this one */
+                      ))
                 {
                     nextTweetID++;
                 }
 
                 //Have we reached the end?
-                if(nextTweetID == tweets.Count)
+                if(nextTweetID == mTweetsCollection.Count)
                 {
                     return Int32.MinValue;
                 }
@@ -467,10 +382,149 @@ namespace Twitter_Archive_Eraser
             }
         }
 
+        void StartTwitterErase(int nbParallelConnections)
+        {
+            TwitterContext ctx = appSettings.Context;
+
+            //No need to synchronize here, no tasks were started yet.
+            nbTweetsToErase = mTweetsCollection.Where(t => t.ToErase == true && string.IsNullOrEmpty(t.Status) /* did not get deleted previously */).Count();
+            nbOutstandingOperations = nbTweetsToErase;
+            nextTweetID = 0;
+
+#if !DEBUG_TEST
+            if (ctx == null)
+            {
+                MessageBox.Show("Error loading twitter authentication info; please try again", "Twitter Archive Eraser", MessageBoxButton.OK, MessageBoxImage.Error);
+                isCurrentlyErasing = false;
+                SetStoppedDeletionState();
+                return;
+            }
+#endif
+
+#if DEBUG_TEST
+            sleepFakeWaitMilliseconds = 1000;
+#endif
+
+            Task[] tasks = new Task[nbParallelConnections];
+
+            for (int i = 0; i < nbParallelConnections; i++)
+            {
+                tasks[i] = Task.Factory.StartNew(() => EraseTweetsAction(ctx, globalCancellationSource.Token));
+            }
+
+            try
+            {
+                Task.WaitAll(tasks);
+            }
+            catch (Exception e)
+            {
+                nextTweetID = 0;
+                RunOnUIThread(delegate ()
+                {
+                    MessageBox.Show("Error: " + e.Message);
+                });
+            }
+            finally
+            {
+                
+                SetStoppedDeletionState();
+
+                // This is called after all tasks are canceled, should renew cacelation token
+                globalCancellationSource = new CancellationTokenSource();
+            }
+
+            isCurrentlyErasing = false;  // Done erasing
+            
+            //termination condition
+            if (nbOutstandingOperations == 0) // nbTweetsDeleted >= (nbTweetsToErase - nbParallelConnections))
+            {
+                RunOnUIThread(delegate()
+                {
+                    progressBar.Value = 100;
+                    txtPrcnt.Text = "100%";
+                    
+                    SetStoppedDeletionState();
+                    nextTweetID = 0;
+                    nbTweetsToErase = 0;
+
+                    var lastTweet = mTweetsCollection.Where(t => !string.IsNullOrEmpty(t.Status)).LastOrDefault();
+                    if(lastTweet != null)
+                    {
+                        gridTweets.BringItemIntoView(lastTweet);
+                    }
+
+                    appSettings.TotalRunningMillisec += runningTime.ElapsedMilliseconds;
+
+                    if (notDeletedTweets.Count == 0)
+                    {
+                        ShowShareTweetDialog(mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count());
+                    }
+                    else
+                    {
+                        string jsonTweets = JsonConvert.SerializeObject(notDeletedTweets);
+                        File.WriteAllText(notDeletedTweetsFilename, jsonTweets);
+
+                        if (MessageBox.Show(notDeletedTweets.Count + " tweets were not deleted!\n" +
+                                                                 "Do you want to retry deleting these tweets again?\n\n" +
+                                                                 "You can try deleting these tweets later by loading them in Twitter Archive Eraser from the following file:\n\n" +
+                                                                 notDeletedTweetsFilename + "\n\n" +
+                                                                 "Select 'Yes' to retry now, or 'No' to retry later",
+                                        "Twitter Archive Eraser",
+                                        MessageBoxButton.YesNo,
+                                        MessageBoxImage.Exclamation) == MessageBoxResult.Yes)
+                        {
+                            WebUtils.ReportStats(appSettings.Username,
+                                                  appSettings.SessionId.ToString(),
+                                                  appSettings.EraseType.ToString(),
+                                                  mTweetsCollection.Count,
+                                                  mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count(),
+                                                  mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_NOT_FOUND)).Count(),
+                                                  mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_ERROR)).Count(),
+                                                  mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_NOT_ALLOWED)).Count(),
+                                                  true,
+                                                  nbParallelConnections,
+                                                  filters,
+                                                  (DateTime.Now - startTime).TotalSeconds);
+
+                            gridTweets.ItemsSource = null;
+                            gridTweets.Items.Refresh();
+
+                            tweetsCollectionView = null;
+
+                            mTweetsCollection = new ObservableRangeCollection<Tweet>();
+
+                            mTweetsCollection.AddRange(notDeletedTweets.Select(t => new Tweet()
+                            {
+                                Text = t.text,
+                                ID = t.id_str,
+                                Type = t.retweeted_status != null ? TweetType.Retweet : TweetType.Tweet,
+                                Status = "",
+                                ToErase = true,
+                                Date = Helpers.ParseDateTime(t.created_at)
+                            }));
+
+                            areTweetsFetchedThroughAPI = true;
+
+                            notDeletedTweets.Clear();
+
+                            // We pass an empty list of jsFiles to reuse code from DeleteTweets_Loaded
+                            // Nothing of clean code I know!
+                            // Sometimes I have hard times sleeping because I know such things are released in the wild
+                            appSettings.JsFiles = new List<JsFile>();
+                            DeleteTweets_Loaded(null, null);
+                        }
+                        else
+                        {
+                            ShowShareTweetDialog(mTweetsCollection.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count());
+                        }
+                    }
+                });
+            }
+        }
 
         //We start multiple actions in parallel to delete tweets
-        void EraseTweetsAction(TwitterContext ctx, CancellationToken cancelToken) {
-
+        void EraseTweetsAction(TwitterContext ctx, CancellationToken cancellationToken)
+        {
             int nextTweetID = getNextTweetIDSync();
 
 #if DEBUG_TEST
@@ -481,13 +535,12 @@ namespace Twitter_Archive_Eraser
             while (nextTweetID != Int32.MinValue)
             {
                 //We can't cancel here, we have already fetched a new ID and if we cancel here it will never be deteled
-
-                Tweet tweet = tweets[nextTweetID];
+                Tweet tweet = mTweetsCollection[nextTweetID];
 
                 //Clear Tweets logic here
                 try
                 {
-#if DEBUG_TEST1
+#if DEBUG_TEST
                     Thread.Sleep(sleepFakeWaitMilliseconds);
                     if (rnd.Next() % 3 == 0)    // Simulate error
                     {
@@ -523,11 +576,11 @@ namespace Twitter_Archive_Eraser
                 catch (Exception ex)
                 {
                     TwitterQueryException exception = ex.InnerException as TwitterQueryException;
-                    if(exception != null && exception.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    if (exception != null && exception.StatusCode == System.Net.HttpStatusCode.NotFound)
                     {
                         tweet.Status = STATUS_NOT_FOUND;
                     }
-                    else if (exception != null && 
+                    else if (exception != null &&
                             (exception.StatusCode == System.Net.HttpStatusCode.Unauthorized || exception.StatusCode == System.Net.HttpStatusCode.Forbidden))
                     {
                         tweet.Status = STATUS_NOT_ALLOWED;
@@ -535,145 +588,29 @@ namespace Twitter_Archive_Eraser
                     else
                     {
                         tweet.Status = STATUS_ERROR;
-                        var tmp = new tweetTJson() { created_at = tweet.Date.ToString("yyyy-MM-dd H:m:s zzz"), id_str = tweet.ID, text = tweet.Text };
+                        var tmp = new JsonTweet() { created_at = Helpers.DateTimeToString(tweet.Date), id_str = tweet.ID, text = tweet.Text };
 
                         lock (_lockerNotDeletedTweetsLst)
                         {
-                            notDeletedTweets.Add(tmp);    
+                            notDeletedTweets.Add(tmp);
                         }
                     }
                 }
-
-                onDeletingTweetUIUpdate(tweet);
+                finally
+                {
+                    onDeletedTweetUIUpdate(tweet);
+                }
 
                 //We cancel once a tweet is completely handeled, we make sure not to request for a new one
-                if (cancelToken.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested)
+                {
                     return;
+                }
 
                 nextTweetID = getNextTweetIDSync();
             }
         }
 
-        void StartTwitterErase(object nbParallelConnectionsObj)
-        {
-            int nbParallelConnections = (int)nbParallelConnectionsObj;
-
-            TwitterContext ctx = appSettings.Context;
-
-            //No need to synchronize here, all tasks are (supposed?) not started yet.
-            nbTweetsToErase = tweets.Where(t => t.ToErase == true || !String.IsNullOrEmpty(t.Status)).Count();
-
-#if !DEBUG_TEST
-            if (ctx == null)
-            {
-                MessageBox.Show("Error loading twitter authentication info; please try again", "Twitter Archive Eraser", MessageBoxButton.OK, MessageBoxImage.Error);
-                isErasing = false;
-                EnableControls();
-                return;
-            }
-#endif
-
-#if DEBUG_TEST
-            sleepFakeWaitMilliseconds = 2000 / nbParallelConnections;
-#endif
-
-            Task[] tasks = new Task[nbParallelConnections];
-
-            for (int i = 0; i < nbParallelConnections; i++)
-            {
-                tasks[i] = Task.Factory.StartNew(() => EraseTweetsAction(ctx, cancellationSource.Token));
-            }
-
-            try
-            {
-                Task.WaitAll(tasks);
-                EnableControls();
-            }
-            catch (Exception)
-            {
-                nextTweetID = 0;
-            }
-
-            isErasing = false;  // Done erasing
-
-            if (nbTweetsDeleted >= (nbTweetsToErase - nbParallelConnections))
-            {
-                progressBar.Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    progressBar.Value = 100;
-                    txtPrcnt.Text = "100%";
-                    
-                    EnableControls();
-                    nextTweetID = 0;
-                    nbTweetsDeleted = 0;
-                    nbTweetsToErase = 0;
-
-                    var lastTweet = tweets.Where(t => t.Status != "").LastOrDefault();
-                    if(lastTweet != null)
-                    {
-                        gridTweets.BringItemIntoView(lastTweet);
-                    }
-
-                    runningTime.Stop();
-                    appSettings.TotalRunningMillisec += runningTime.ElapsedMilliseconds;
-
-                    if (notDeletedTweets.Count == 0)
-                    {
-                        ShowShareTweetDialog(tweets.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count());
-                    }
-                    else
-                    {
-                        string jsonTweets = JsonConvert.SerializeObject(notDeletedTweets);
-                        File.WriteAllText(notDeletedTweetsFilename, jsonTweets);
-
-                        if(MessageBox.Show(notDeletedTweets.Count + " tweets were not deleted!\n" +
-                                                                 "Do you want to retry deleting these tweets again?\n\n" +
-                                                                 "You can try deleting these tweets later by loading them in Twitter Archive Eraser from the following file:\n\n" +
-                                                                 notDeletedTweetsFilename + "\n\n" +
-                                                                 "Select 'Yes' to retry now, or 'No' to retry later",
-                                        "Twitter Archive Eraser", 
-                                        MessageBoxButton.YesNo, 
-                                        MessageBoxImage.Exclamation) == MessageBoxResult.Yes)
-                        {
-                            WebUtils.ReportStats(appSettings.Username,
-                                                  appSettings.SessionId.ToString(),
-                                                  appSettings.EraseType.ToString(),
-                                                  tweets.Count,
-                                                  tweets.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count(),
-                                                  tweets.Where(t => String.Equals(t.Status, STATUS_NOT_FOUND)).Count(),
-                                                  tweets.Where(t => String.Equals(t.Status, STATUS_ERROR)).Count(),
-                                                  tweets.Where(t => String.Equals(t.Status, STATUS_NOT_ALLOWED)).Count(),
-                                                  true,
-                                                  nbParallelConnections,
-                                                  filters,
-                                                  (DateTime.Now - startTime).TotalSeconds);
-
-                            tweets.Clear();
-                            tweets.AddRange(notDeletedTweets.Select(t => new Tweet(){
-                                                                Text = t.text,
-                                                                ID = t.id_str,
-                                                                Type = t.retweeted_status != null ? TweetType.Retweet : TweetType.Tweet,
-                                                                Status = "",
-                                                                ToErase = true,
-                                                                Date = ParseDateTime(t.created_at)
-                                        }));
-
-                            notDeletedTweets.Clear();
-
-                            // We pass an empty list of jsFiles to reuse code from DeleteTweets_Loaded
-                            // Nothing of clean code I know!
-                            // Sometimes I have hard times sleeping because I know such things are released in the wild
-                            appSettings.JsFiles = new List<JsFile>();
-                            DeleteTweets_Loaded(null, null);
-                        }
-                        else
-                        {
-                            ShowShareTweetDialog(tweets.Where(t => String.Equals(t.Status, STATUS_DELETED)).Count());
-                        }
-                    }
-                }));
-            }
-        }
 
         #endregion
 
@@ -687,8 +624,32 @@ namespace Twitter_Archive_Eraser
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 ApplyFilterToCollectionView();
-                isFilterView = true;
+                isFilterViewActive = true;
             }
+        }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyFilterToCollectionView();
+            isFilterViewActive = true;
+        }
+
+        private void btnClear_Click(object sender, RoutedEventArgs e)
+        {
+            tweetsCollectionView.Filter = t => { return true; };
+            tweetsCollectionView.Refresh();
+            isFilterViewActive = false;
+
+            filterShowRetweetsOnly = false;
+            chkShowRetweetOnly.IsChecked = false;
+            txtFilterTweets.Text = "";
+        }
+
+        void ShowShareTweetDialog(int numTweetsDeleted)
+        {
+            appSettings.NumTeetsDeleted = numTweetsDeleted;
+            SendTweet sendTweetWindow = new SendTweet();
+            sendTweetWindow.ShowDialog();
         }
 
         void ApplyFilterToCollectionView()
@@ -785,7 +746,7 @@ namespace Twitter_Archive_Eraser
             foreach (var item in tweetsCollectionView)
             {
                 Tweet t = item as Tweet;
-                if (t != null && t.YearMonth == groupYearMoth)
+                if (t != null && t.YearAndMonth == groupYearMoth)
                     t.ToErase = isChecked;
             }
         }
@@ -799,7 +760,7 @@ namespace Twitter_Archive_Eraser
             if (tweetsCollectionView == null)
                 return;
 
-            bool isChecked = checkBox.IsChecked == true ? true : false;
+            bool isChecked = checkBox.IsChecked ?? false;
 
             foreach (var item in tweetsCollectionView)
             {

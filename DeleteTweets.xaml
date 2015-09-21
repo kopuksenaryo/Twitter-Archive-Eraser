@@ -17,7 +17,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="3" Name="gridTweetsParent" HorizontalAlignment="Stretch" Margin="0 10 0 0">
-                <xcdg:DataGridControl x:Name="gridTweets" AllowDrag="False" HorizontalAlignment="Stretch">
+                <xcdg:DataGridControl x:Name="gridTweets" AllowDrag="False" HorizontalAlignment="Stretch" AutoCreateColumns="False">
                     <xcdg:DataGridControl.Resources>
                         <DataTemplate x:Key="UrlButton">
                             <StackPanel Orientation="Horizontal">
@@ -96,20 +96,25 @@
                     </xcdg:DataGridControl.View>
 
                     <xcdg:DataGridControl.Columns>
-                        <xcdg:Column FieldName="YearMonth" Title="Month" Width="100" ReadOnly="True" AllowSort="False" />
-                        <xcdg:Column FieldName="Type" Title="Type" Width="70" ReadOnly="True"/>
+                        <xcdg:Column FieldName="YearAndMonth" Title="   Month" Width="100" ReadOnly="True" AllowSort="False"/>
+                        <xcdg:Column FieldName="Type" Title="Type" Width="70" ReadOnly="True" CellHorizontalContentAlignment="Center"/>
                         <xcdg:Column FieldName="Status" Title="Status" Width="110" ReadOnly="True" AllowSort="False" CellHorizontalContentAlignment="Center"/>
-                        <xcdg:Column FieldName="ToErase" Title="Erase ?"  Width="90" CellEditorDisplayConditions="MouseOverCell" AllowSort="False" CellHorizontalContentAlignment="Center" >
+                        <xcdg:Column FieldName="." Title="Erase ?" Width="90" CellEditorDisplayConditions="CellIsCurrent" AllowSort="False" CellHorizontalContentAlignment="Center">
                             <xcdg:Column.TitleTemplate>
                                 <DataTemplate>
                                     <CheckBox Name="chkSelectAll" Click="chkSelectAll_Click" Margin="0 2 0 0" ToolTip="Check / Uncheck all">Erase ?</CheckBox>
                                 </DataTemplate>
                             </xcdg:Column.TitleTemplate>
+
+                            <xcdg:Column.CellContentTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding ToErase, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                </DataTemplate>
+                            </xcdg:Column.CellContentTemplate>
                         </xcdg:Column>
-                        <xcdg:Column FieldName="ID" Title="Tweet ID" Width="130" ReadOnly="True" AllowSort="False" CellContentTemplate="{StaticResource UrlButton}">
-                        </xcdg:Column>
-                        <xcdg:Column FieldName="Username" Title=" User" Width="120" ReadOnly="True"/>
-                        <xcdg:Column FieldName="Date" Title=" Date" Width="140" CellEditorDisplayConditions="None" ReadOnly="True"/>
+                        <xcdg:Column FieldName="ID" Title="Tweet ID" Width="130" ReadOnly="True" AllowSort="False" CellContentTemplate="{StaticResource UrlButton}" CellHorizontalContentAlignment="Center"/>
+                        <xcdg:Column FieldName="Username" Title=" User" Width="120" ReadOnly="True" CellHorizontalContentAlignment="Center"/>
+                        <xcdg:Column FieldName="Date" Title=" Date" Width="140" CellEditorDisplayConditions="None" ReadOnly="True" CellHorizontalContentAlignment="Center"/>
                         <xcdg:Column FieldName="Text" Title=" Text" Width="*" ReadOnly="True" AllowSort="False"/>
                     </xcdg:DataGridControl.Columns>
                 </xcdg:DataGridControl>
@@ -148,7 +153,7 @@
                     <Button HorizontalAlignment="Right" 
                             FontSize="16" 
                             FontWeight="Bold" 
-                            Click="Button_Click_2" 
+                            Click="btnBack_Click" 
                             Width="97" 
                             Height="34"
                             Name="btnBack">

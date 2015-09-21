@@ -51,8 +51,8 @@
                     <CheckBox Name="chkDeleteDm" 
                               HorizontalAlignment="Center" 
                               Click="chkDeleteDm_Click"
-                              ToolTip="Check this if you want to delete DMs, otherwise, you can sign in without DM access permissions">
-                        I want to delete DMs
+                              ToolTip="Check this **only** if you want to delete Direct Messages or Favorites">
+                        I want to delete Direct Messages (DMs)
                     </CheckBox>
                 </StackPanel>
                 
@@ -64,7 +64,7 @@
                         <TextBlock FontSize="18"><Run Text="Please choose an option below:"/></TextBlock>
                     </StackPanel>
 
-                    <StackPanel Margin="20 0">
+                    <StackPanel Margin="20 10">
                         <Button Name="btnRemoveTweets"
                             HorizontalAlignment="Center"
                             Height="50" 

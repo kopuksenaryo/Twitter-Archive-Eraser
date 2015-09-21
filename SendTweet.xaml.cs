@@ -62,6 +62,8 @@ namespace Twitter_Archive_Eraser
                                               appSettings.NumTeetsDeleted,
                                               type,
                                               totalTime);
+
+            FocusManager.SetFocusedElement(txtTweetTextParent, txtTweetText);
         }
 
         private void btnSendTweet_Click(object sender, RoutedEventArgs e)

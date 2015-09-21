@@ -7,8 +7,7 @@ using System.Linq;
 
 using Ionic.Zip;
 using System.Diagnostics;
-
-
+using System.IO;
 
 namespace Twitter_Archive_Eraser
 {
@@ -17,8 +16,8 @@ namespace Twitter_Archive_Eraser
     /// </summary>
     public partial class ArchiveFiles : Window
     {
-        private List<JsFile> jsFiles = new List<JsFile>();
-        IEnumerable<YearOfTweets> yearsOfTweets = new List<YearOfTweets>();
+        List<JsFile> jsFiles = new List<JsFile>();
+        List<JsFilesGroup> jsFilesGroupList = new List<JsFilesGroup>();
 
         public ArchiveFiles()
         {
@@ -36,40 +35,43 @@ namespace Twitter_Archive_Eraser
             e.Handled = true;
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.DefaultExt = ".zip";
-            dlg.Filter = "Zip Archive (*.zip)|*.zip|JS archive files (*.js)|*.js";
+            dlg.Filter = "Twitter Archive (*.zip) or Tweets .js file (*.js)|*.zip;*.js";
             dlg.Multiselect = true;
 
-            Nullable<bool> result = dlg.ShowDialog();
+            bool? result = dlg.ShowDialog();
 
             if (result == true)
             {
-                foreach (var item in dlg.FileNames)
+                foreach (var filename in dlg.FileNames)
 	            {
                     //if the file is not already present
-                    if (item.EndsWith(".js") && !jsFiles.Any(file => file.Path == item))
+                    if (filename.EndsWith(".js") && !jsFiles.Any(file => file.FullPath == filename))
                     {
                         jsFiles.Add(new JsFile() { 
-                                            Path = item, 
+                                            FullPath = filename, 
                                             Selected = false, 
                                             OriginZipFile = "", 
-                                            Filename = item.Substring(item.LastIndexOf('\\') + 1) 
+                                            Filename = filename.Substring(filename.LastIndexOf('\\') + 1) 
                         });
                     }
 
-                    if(item.EndsWith(".zip"))
+                    if(filename.EndsWith(".zip"))
                     {
-                        using(ZipFile zipArchive = ZipFile.Read(item))
+                        using(ZipFile zipArchive = ZipFile.Read(filename))
 	                    {
                             foreach (ZipEntry jsFile in zipArchive)
                             {
-                                if (jsFile.FileName.EndsWith(".js") && jsFile.FileName.Contains(@"data/js/tweets") && !jsFiles.Any(file => file.Path == jsFile.FileName))
+                                if (jsFile.FileName.EndsWith(".js") 
+                                    && jsFile.FileName.Contains(@"data/js/tweets") 
+                                    && !jsFiles.Any(file => file.FullPath == jsFile.FileName))
                                 {
-                                    jsFiles.Add(new JsFile() { 
-                                                    Path = jsFile.FileName, 
-                                                    Selected = false,
-                                                    Filename = jsFile.FileName.Substring(jsFile.FileName.LastIndexOf('/')+1),
-                                                    OriginZipFile = item
-                                                });
+                                    jsFiles.Add(new JsFile()
+                                    {
+                                        FullPath = jsFile.FileName,
+                                        Selected = false,
+                                        Filename = Path.GetFileName(jsFile.FileName),
+                                        OriginZipFile = filename
+                                    });
                                 }
                             }
 	                    }
@@ -77,19 +79,19 @@ namespace Twitter_Archive_Eraser
 	            }
 
 
-                foreach (var item in jsFiles)
+                foreach (var jsFile in jsFiles)
                 {
-                    int tmpYear = -1;
-                    int tmpMonth = -1;
+                    int tmpYear = -1, tmpMonth = -1;
 
-                    if (System.Text.RegularExpressions.Regex.IsMatch(item.Filename, @"\d{4}_\d{2}\.js", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                    // Get the year and month of a given JS file
+                    if (System.Text.RegularExpressions.Regex.IsMatch(jsFile.Filename, @"\d{4}_\d{2}\.js", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
                     {
-                        if(!Int32.TryParse(item.Filename.Substring(0, "2013".Length), out tmpYear))
+                        if(!int.TryParse(jsFile.Filename.Substring(0, "2013".Length), out tmpYear))
                         {
                             tmpYear = -1;
                         }    
 
-                        if (!Int32.TryParse(item.Filename.Substring(item.Filename.IndexOf('_') + 1, "01".Length), out tmpMonth))
+                        if (!int.TryParse(jsFile.Filename.Substring(jsFile.Filename.IndexOf('_') + 1, "01".Length), out tmpMonth))
                         {
                             tmpMonth = -1;
                         }
@@ -100,33 +102,30 @@ namespace Twitter_Archive_Eraser
                         }
                     }
                     
-                    item.TweetYear = tmpYear;
-                    item.TweetMonth = tmpMonth;
+                    jsFile.Year = tmpYear;
+                    jsFile.Month = tmpMonth;
 
-                    if (item.TweetMonth != -1)
+                    if (jsFile.Month != -1)
                     {
-                        item.FriendlyFilename = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.TweetMonth);
+                        jsFile.FriendlyFilename = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(jsFile.Month);
                     }
                     else
                     {
-                        item.FriendlyFilename = item.Filename;
+                        jsFile.FriendlyFilename = jsFile.Filename;
                     }
 
                     // If not from zip archive
-                    if (String.IsNullOrEmpty(item.OriginZipFile))
+                    if (String.IsNullOrEmpty(jsFile.OriginZipFile))
                     {
-                        item.FriendlyFilename += "<external>";
+                        jsFile.FriendlyFilename += " <external>";
                     }
                 }
 
-                yearsOfTweets = jsFiles.GroupBy(jsFile => jsFile.TweetYear,
-                                                jsFile => jsFile,
-                                                (key, g) => new { Year = key, TweetJsFiles = g })
-                                       .Select(a => new YearOfTweets()
-                                       {
-                                           Year = a.Year,
-                                           TweetJsFiles = a.TweetJsFiles.ToList<JsFile>()
-                                       });    
+                var groups = jsFiles.GroupBy(jsFile => jsFile.Year);
+                foreach (var group in groups)
+                {
+                    jsFilesGroupList.Add(new JsFilesGroup() {Key = group.Key, JsFiles = group.ToList() });
+                }
             }
 
             if (jsFiles.Count < 1)
@@ -134,7 +133,7 @@ namespace Twitter_Archive_Eraser
                 MessageBox.Show("No Twitter archive or *.js files were loaded!", "Twitter Archive Eraser", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            treeFiles.ItemsSource = yearsOfTweets;
+            treeFiles.ItemsSource = jsFilesGroupList;
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
@@ -142,9 +141,9 @@ namespace Twitter_Archive_Eraser
             e.Handled = true;
 
             List<JsFile> selectedJsFiles = new List<JsFile>();
-            foreach (var itemYear in yearsOfTweets)
+            foreach (var group in jsFilesGroupList)
             {
-                selectedJsFiles.AddRange(itemYear.TweetJsFiles.Where(jsFile => jsFile.Selected == true));
+                selectedJsFiles.AddRange(group.JsFiles.Where(jsFile => jsFile.Selected == true));
             }
 
             if (selectedJsFiles.Count == 0)
@@ -159,7 +158,7 @@ namespace Twitter_Archive_Eraser
 
             WebUtils.ReportMonthsToDelete(settings.Username, 
                                           settings.SessionId.ToString(),
-                                          selectedJsFiles.Select(jsFile => String.Format("{0}_{1}", jsFile.TweetYear, jsFile.TweetMonth)).ToList());
+                                          selectedJsFiles.Select(jsFile => String.Format("{0}_{1}", jsFile.Year, jsFile.Month)).ToList());
 
             DeleteTweets page = new DeleteTweets();
             this.Hide();

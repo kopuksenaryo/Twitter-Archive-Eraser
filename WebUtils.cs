@@ -21,7 +21,10 @@ namespace Twitter_Archive_Eraser
             {
                 using (WebClient wc = new WebClient())
                 {
-                    return wc.DownloadString(BASE_STATISTICS_URL + "user=" + userName + "&GUID=" + sessionGUID + "&" + queryString);
+                    string res = wc.DownloadString(BASE_STATISTICS_URL + "user=" + userName + "&GUID=" + sessionGUID + "&" + queryString);
+                    Console.WriteLine(res);
+
+                    return res;
                 }
             }
             catch (Exception)

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Select Twitter Archive File" 
         Height="615" 
-        Width="700" 
+        Width="765.6" 
         ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
         Closed="Window_Closed_1">
     <Grid>
@@ -16,79 +16,65 @@
         <StackPanel Grid.Row="0">
             <StackPanel Margin="20 20 20 10">
                 <TextBlock FontSize="36" >Step 2</TextBlock>
-                <TextBlock FontSize="18" Margin="20 0" TextWrapping="Wrap">• Download your Twitter archive from: 
-                    <Hyperlink NavigateUri="https://twitter.com/settings/account" 
-                           RequestNavigate="Hyperlink_RequestNavigate"> 
-                        https://twitter.com/settings/account
-                    </Hyperlink>
-                </TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="18" Margin="20 0 0 0" TextWrapping="Wrap">• Download your Twitter archive from: 
+                        <Hyperlink NavigateUri="https://twitter.com/settings/account" 
+                               RequestNavigate="Hyperlink_RequestNavigate"> 
+                            https://twitter.com/settings/account
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock FontSize="12" Margin="5 5" TextWrapping="Wrap" FontWeight="Bold">
+                        <Hyperlink NavigateUri="http://www.wikihow.com/Request-Your-Twitter-Archive-File" 
+                               RequestNavigate="Hyperlink_RequestNavigate" Foreground="#FF264E05" ToolTip="Step by Step guide to how to download your twitter archive" TextDecorations="{x:Null}"> 
+                            (Show me how)
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
                 <TextBlock FontSize="18" Margin="20 0" TextWrapping="Wrap">• Select the tweets to erase from each month below
                 </TextBlock>
             </StackPanel>
             <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Name="btnAddFiles" Padding="25 3 25 5" FontSize="26" Click="btnAddFiles_Click"
-                        ToolTip="You can add multiple *.zip archive files or *.js files">Load/add Twitter archive files</Button>
+                        ToolTip="You can add multiple *.zip archive files or *.js files">Load/add twitter archive files</Button>
             </StackPanel>
             </StackPanel>
 
         <Grid Grid.Row="1" Margin="10">
-        <CheckBox HorizontalAlignment="Left" 
+            <CheckBox HorizontalAlignment="Left" 
                     Checked="SelectAllCheckBox_Checked" 
                     Unchecked="SelectAllCheckBox_UnChecked"
                     IsChecked="False" 
                   FontSize="14">Select all / Select none</CheckBox>
-        
-        <TreeView Name="treeFiles" Margin="0 20 0 0">
-            
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="True"/>
-                </Style>
-            </TreeView.ItemContainerStyle>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding TweetJsFiles}">
-                    <TextBlock Text="{Binding Year}" FontSize="16" FontWeight="Bold" />
 
-                    <HierarchicalDataTemplate.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <CheckBox IsChecked="{Binding Path=Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+            <TreeView Name="treeFiles" Margin="0 20 0 0">
+
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="True"/>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding JsFiles}">
+                        <TextBlock Text="{Binding Key}" FontSize="16" FontWeight="Bold" />
+
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding Path=Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
                                           Margin="0 0 5 0"/>
-                                <TextBlock Text="{Binding FriendlyFilename}" FontSize="14" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </HierarchicalDataTemplate.ItemTemplate>
-                    
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-            
-        </TreeView>
-        </Grid>
-        <!--<DataGrid Name="gridFiles" Grid.Row="1" Margin="10"
-                      AutoGenerateColumns="False" 
-                      CanUserResizeColumns="False"
-                      IsReadOnly="True"
-                      CanUserSortColumns="False"
-                      CanUserAddRows="False"
-                      >
-            <DataGrid.Columns>
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.Header>
-                        
-                    </DataGridTemplateColumn.Header>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding Path=Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                                    <TextBlock Text="{Binding FriendlyFilename}" FontSize="14" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
 
-                <DataGridTextColumn Header="File" Binding="{Binding Path}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>-->
-            
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+
+            </TreeView>
+        </Grid>
+
         <Button Grid.Row="2" Name="btnNext" Width="120" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,10,10,10" Click="btnNext_Click">Next</Button>
 
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="3" Margin="0 0 10 0" Width="104">
