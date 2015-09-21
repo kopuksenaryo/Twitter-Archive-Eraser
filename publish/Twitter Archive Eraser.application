@@ -14,7 +14,7 @@
     <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="Application Files\Twitter Archive Eraser_5_0_0_25\Twitter Archive Eraser.exe.manifest" size="11420">
+    <dependentAssembly dependencyType="install" codebase="Application Files\Twitter Archive Eraser_5_0_0_25\Twitter Archive Eraser.exe.manifest" size="11488">
       <assemblyIdentity name="Twitter Archive Eraser.exe" version="5.0.0.25" publicKeyToken="0000000000000000" language="en" processorArchitecture="amd64" type="win32" />
     </dependentAssembly>
   </dependency>

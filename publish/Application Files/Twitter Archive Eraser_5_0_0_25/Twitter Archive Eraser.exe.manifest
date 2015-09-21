@@ -4,7 +4,7 @@
   <description asmv2:iconFile="twitter_alt.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" publicKeyToken="C86EF857AB5687F0" language="neutral" processorArchitecture="amd64" />
     <commandLine file="Twitter Archive Eraser.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -101,8 +101,8 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Twitter Archive Eraser.exe" size="114688">
-      <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" language="neutral" processorArchitecture="amd64" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Twitter Archive Eraser.exe" size="115200">
+      <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" publicKeyToken="C86EF857AB5687F0" language="neutral" processorArchitecture="amd64" />
     </dependentAssembly>
   </dependency>
   <dependency>
