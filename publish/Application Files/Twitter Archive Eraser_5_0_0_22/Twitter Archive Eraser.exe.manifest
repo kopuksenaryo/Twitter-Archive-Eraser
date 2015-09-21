@@ -171,14 +171,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Twitter Archive Eraser.exe" size="122264">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Twitter Archive Eraser.exe" size="115608">
       <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>twreFt6/9MTfJe/73oEc2I/65IZpK5FWMcGN9umOWyA=</dsig:DigestValue>
+        <dsig:DigestValue>6lgfgvtbPK6C1pL6Kpg3WVjFilrPFJmK1jld9c8cZ9M=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -254,13 +254,40 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="Licence.txt" size="16090" writeableType="applicationData">
+  <file name="lib\Ionic.Zip License.txt" size="2705">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>CH7HQdWHxviRTuDXwJmODKVpSzYnFk/t4xe7VFOdib4=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="lib\Licence.txt" size="16090">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>Kq0+OXb/50kd3fEiZcbIZh+wMLbssc3PFBBlr5+Hy9o=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="lib\LINQ to Twitter License.txt" size="2659">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>OQe3LZLNAYCfUC/V1YOtnB75oekkxL65HW2W6caKboE=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="lib\Newtonsoft.Json Licence.txt" size="1093">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>/aPqSu9Jrp+F0Gb2d+EGy/QeegV3FnokGmfSR6pkfRE=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Twitter Archive Eraser.exe.config" size="2206">
@@ -298,4 +325,4 @@
       <!--<supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />-->
     </application>
   </compatibility>
-<publisherIdentity name="CN=MARTANI" issuerKeyHash="ece82ef673ed944b639a9f552f8e13256b566108" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>0ZnEnJt/rKEBhRlW/y/iCrD4YAs=</DigestValue></Reference></SignedInfo><SignatureValue>l35i3+BnvxYv5gUYbx/LWXfQEGBfdtnRGmKn4i5Lr59apeksu5OLwCo4y1zjfy5Zzrfz6+hJAmS8YRku76dxLzjTIQbMsFcxX9pUi5FDmE6JoWqQQEladiWDMtmRJJ19WjzO45D1FMRGiK/a24jr1zkshAxmZUQaVfq0eVTwVvU=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>xEB2Cx5+oS9iq3tgWUn6alGEnxp689hGqagwpWrJkSTL7JpPX7FQ0RPHsXVGi3K58zwfoqxaajoHJ6KAb74KJeCOC6J8TvdMB/uHCCkLrf/n0cH6jh59ZAQ00/Y5eDq7dyqElltFdW/wNQMaaME4zVg8sCSm8MOTVM+lM9Zdcsc=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="0b60f8b00ae22fff56198501a1ac7f9b9cc499d1" Description="" Url=""><as:assemblyIdentity name="Twitter Archive Eraser.exe" version="5.0.0.22" publicKeyToken="747c14bca77add7b" language="en" processorArchitecture="amd64" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=MARTANI</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>SQGcXQUBql2iza3zOWpEgiW6OpY=</DigestValue></Reference></SignedInfo><SignatureValue>hPs+R311udRFEAQF/v1Qn6Y2VMxJhqidXil0dBI6yW3TWaZKlEuQBKKC67kxSeLavHgznlRZWRm2ewECioSGfuPk9y9n1/x87lWJAIWLKZH/AaivPOzFlFZV+mlRIfQePsMfvQmiZAftNAvz772PvXEtcJ6K/i7wvi7vdGpnxq8=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xEB2Cx5+oS9iq3tgWUn6alGEnxp689hGqagwpWrJkSTL7JpPX7FQ0RPHsXVGi3K58zwfoqxaajoHJ6KAb74KJeCOC6J8TvdMB/uHCCkLrf/n0cH6jh59ZAQ00/Y5eDq7dyqElltFdW/wNQMaaME4zVg8sCSm8MOTVM+lM9Zdcsc=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB6DCCAVWgAwIBAgIQ5Inu9MTKf4ZNxx2Foi81GTAJBgUrDgMCHQUAMBIxEDAOBgNVBAMTB01BUlRBTkkwHhcNMTUwOTIxMDE0NTA5WhcNMzkxMjMxMjM1OTU5WjASMRAwDgYDVQQDEwdNQVJUQU5JMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEQHYLHn6hL2Kre2BZSfpqUYSfGnrz2EapqDClasmRJMvsmk9fsVDRE8exdUaLcrnzPB+irFpqOgcnooBvvgol4I4LonxO90wH+4cIKQut/+fRwfqOHn1kBDTT9jl4Ort3KoSWW0V1b/A1AxpowTjNWDywJKbww5NUz6Uz1l1yxwIDAQABo0cwRTBDBgNVHQEEPDA6gBBL8j92a4CPFSGd275HoYbSoRQwEjEQMA4GA1UEAxMHTUFSVEFOSYIQOQiDmU2JGrhOwdiE0aKa0jAJBgUrDgMCHQUAA4GBANsDm3CQBsbBSIJt2RUCAnm6XkbtCyy3morZ8ALFq2ygv3zEBZnOjAmKMj0U2V4S0z7gJSPR+Jp9NSK0ACLOwYoUTvKtK1F5VhGpoKHLVfTOf8hf9jYOToC63QhT/EBwaUoLrLZ2bFvB6S6t/WOpA9QrrofUny3adNFji2VESEt4</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
+<publisherIdentity name="CN=MARTANI" issuerKeyHash="ece82ef673ed944b639a9f552f8e13256b566108" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>Bhdcb4fXdiLdn83xCEO2BYHi4EA=</DigestValue></Reference></SignedInfo><SignatureValue>Nvb/LZ44nZ+AyBuuUAw4UY2UsOhytMGj12SPA9b7VS24KcBY5VPGLseQKP4gyFmV7Vayqcbkcu5CC/KxGNMoSvbIOUHdfVkdWbQ9tZsZB1XE5ihdP3/gw5+rTGwFjYRdQ8BZj2iku5HOaRukifJikhY7XuL9STTlXCwxSiL2q/w=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>xEB2Cx5+oS9iq3tgWUn6alGEnxp689hGqagwpWrJkSTL7JpPX7FQ0RPHsXVGi3K58zwfoqxaajoHJ6KAb74KJeCOC6J8TvdMB/uHCCkLrf/n0cH6jh59ZAQ00/Y5eDq7dyqElltFdW/wNQMaaME4zVg8sCSm8MOTVM+lM9Zdcsc=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="40e0e28105b64308f1cd9fdd2276d7876f5c1706" Description="" Url=""><as:assemblyIdentity name="Twitter Archive Eraser.exe" version="5.0.0.22" publicKeyToken="747c14bca77add7b" language="en" processorArchitecture="amd64" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=MARTANI</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>mUbAxXRXp7wJU5+gHOjR4OpmJno=</DigestValue></Reference></SignedInfo><SignatureValue>BSUUHKmZZAiiCFCUsdd1XD3KOAvnCTaDd/O3uEU95mr9y8b3vvS1MdlIN8OE6Nrwa+qrL3ZzNKpSdXWe4K6iC3wIW9YbRKoKBpkFiRFhcbMaiRHdL9fzy8UH/2vM9QnrBF7iUgjQkqbcmU2zsWlRcFiZCPZrZhXSV8G1JA3XtzQ=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xEB2Cx5+oS9iq3tgWUn6alGEnxp689hGqagwpWrJkSTL7JpPX7FQ0RPHsXVGi3K58zwfoqxaajoHJ6KAb74KJeCOC6J8TvdMB/uHCCkLrf/n0cH6jh59ZAQ00/Y5eDq7dyqElltFdW/wNQMaaME4zVg8sCSm8MOTVM+lM9Zdcsc=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB6DCCAVWgAwIBAgIQ5Inu9MTKf4ZNxx2Foi81GTAJBgUrDgMCHQUAMBIxEDAOBgNVBAMTB01BUlRBTkkwHhcNMTUwOTIxMDE0NTA5WhcNMzkxMjMxMjM1OTU5WjASMRAwDgYDVQQDEwdNQVJUQU5JMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEQHYLHn6hL2Kre2BZSfpqUYSfGnrz2EapqDClasmRJMvsmk9fsVDRE8exdUaLcrnzPB+irFpqOgcnooBvvgol4I4LonxO90wH+4cIKQut/+fRwfqOHn1kBDTT9jl4Ort3KoSWW0V1b/A1AxpowTjNWDywJKbww5NUz6Uz1l1yxwIDAQABo0cwRTBDBgNVHQEEPDA6gBBL8j92a4CPFSGd275HoYbSoRQwEjEQMA4GA1UEAxMHTUFSVEFOSYIQOQiDmU2JGrhOwdiE0aKa0jAJBgUrDgMCHQUAA4GBANsDm3CQBsbBSIJt2RUCAnm6XkbtCyy3morZ8ALFq2ygv3zEBZnOjAmKMj0U2V4S0z7gJSPR+Jp9NSK0ACLOwYoUTvKtK1F5VhGpoKHLVfTOf8hf9jYOToC63QhT/EBwaUoLrLZ2bFvB6S6t/WOpA9QrrofUny3adNFji2VESEt4</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
