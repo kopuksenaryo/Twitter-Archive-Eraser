@@ -4,21 +4,13 @@
   <description asmv2:iconFile="twitter_alt.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" publicKeyToken="C86EF857AB5687F0" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" publicKeyToken="4B2E9D28A3E59FC3" language="neutral" processorArchitecture="amd64" />
     <commandLine file="Twitter Archive Eraser.exe" parameters="" />
   </entryPoint>
   <trustInfo>
     <security>
       <applicationRequestMinimum>
-        <PermissionSet version="1" class="System.Security.NamedPermissionSet" Name="Internet" Description="Default rights given to Internet applications" ID="Custom" SameSite="site">
-          <IPermission version="1" class="System.Security.Permissions.FileDialogPermission, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Access="Open" />
-          <IPermission UserQuota="1024000" version="1" class="System.Security.Permissions.IsolatedStorageFilePermission, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Allowed="ApplicationIsolationByUser" />
-          <IPermission version="1" class="System.Security.Permissions.SecurityPermission, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Flags="Execution" />
-          <IPermission version="1" class="System.Security.Permissions.UIPermission, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" Clipboard="OwnClipboard" Window="SafeTopLevelWindows" />
-          <IPermission version="1" class="System.Drawing.Printing.PrintingPermission, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Level="SafePrinting" />
-          <IPermission version="1" class="System.Security.Permissions.MediaPermission, WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Audio="SafeAudio" Image="SafeImage" Video="SafeVideo" />
-          <IPermission version="1" class="System.Security.Permissions.WebBrowserPermission, WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Level="Safe" />
-        </PermissionSet>
+        <PermissionSet version="1" class="System.Security.NamedPermissionSet" Name="Internet" Description="Default rights given to Internet applications" Unrestricted="true" ID="Custom" SameSite="site" />
         <defaultAssemblyRequest permissionSetReference="Custom" />
       </applicationRequestMinimum>
       <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
@@ -53,89 +45,216 @@
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Ionic.Zip.Reduced.dll" size="253440">
       <assemblyIdentity name="Ionic.Zip.Reduced" version="1.9.1.8" publicKeyToken="EDBE51AD942A3F5C" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>pACSiJguTDDSK1RBZ/ctuILjTw/afUBhssAshGiMDtE=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="LinqToTwitter.AspNet.dll" size="14336">
       <assemblyIdentity name="LinqToTwitter.AspNet" version="3.1.2.18330" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>u4ImsbBoieoDtEWm8XKQJ76t0v3r7TcXVFjletJMeMI=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="LinqToTwitterPcl.dll" size="479232">
       <assemblyIdentity name="LinqToTwitterPcl" version="3.1.2.18329" publicKeyToken="957107BE965C25D9" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>Tzsp+MltyLKlOjnDJJwVvmoOgjZsAu1t7K4yjHXFBfA=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Newtonsoft.Json.dll" size="354304">
       <assemblyIdentity name="Newtonsoft.Json" version="4.0.8.0" publicKeyToken="30AD4FE6B2A6AEED" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>zNSxZ6bgaXLQPq0Fo3DEKlIXhrbhSOS1dzf3nnXpv7M=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Net.Http.Extensions.dll" size="22232">
       <assemblyIdentity name="System.Net.Http.Extensions" version="2.2.29.0" publicKeyToken="B03F5F7F11D50A3A" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>nIuH6alQ3rfyh1L4deqC8bVacJlqyMEgc/zqM2ZLIEg=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Net.Http.Primitives.dll" size="21720">
       <assemblyIdentity name="System.Net.Http.Primitives" version="4.2.29.0" publicKeyToken="B03F5F7F11D50A3A" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>6bU19EYMdtZ99inOLLuExDWnEsqUi2HdqvMTCVBrhgQ=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Reactive.Core.dll" size="114896">
       <assemblyIdentity name="System.Reactive.Core" version="2.2.5.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>rEZOqEU5xgy9tJjdeH9vuQsvEQZ6WsyeHtT49iy3vHo=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Reactive.Interfaces.dll" size="24272">
       <assemblyIdentity name="System.Reactive.Interfaces" version="2.2.5.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>yGtGJdOjW29gDY8NEpuC63OSjl1PnfGgKOUnqshu5OQ=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Reactive.Linq.dll" size="708816">
       <assemblyIdentity name="System.Reactive.Linq" version="2.2.5.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>IfrSmDtLL5UEnpdcnyane/6SgdjtGOOAyQF/yCE3odk=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Reactive.PlatformServices.dll" size="38600">
       <assemblyIdentity name="System.Reactive.PlatformServices" version="2.2.5.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>qBU96jJWKEniPhcWCbFF4R7JGteM0FTJlRRnfFgTCtk=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Twitter Archive Eraser.exe" size="115200">
-      <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" publicKeyToken="C86EF857AB5687F0" language="neutral" processorArchitecture="amd64" />
+      <assemblyIdentity name="Twitter Archive Eraser" version="5.0.0.0" publicKeyToken="4B2E9D28A3E59FC3" language="neutral" processorArchitecture="amd64" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>d3F5aTBNyUbVrRUFSIv4cihCTmUDiaCMA/uGhAFsWXg=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Xceed.Wpf.AvalonDock.dll" size="429568">
       <assemblyIdentity name="Xceed.Wpf.AvalonDock" version="2.5.0.0" publicKeyToken="3E4669D2F30244F4" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>8bKW4J9jGI1rdDmzMQPcBSeWhKLTYRdUXAOCmGWaoYs=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Xceed.Wpf.AvalonDock.Themes.Aero.dll" size="86016">
       <assemblyIdentity name="Xceed.Wpf.AvalonDock.Themes.Aero" version="2.5.0.0" publicKeyToken="3E4669D2F30244F4" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>EEy2vcRBHcYs5db5z9u2v9tftsR+MuB5hqeqj5SmpKA=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Xceed.Wpf.AvalonDock.Themes.Metro.dll" size="78848">
       <assemblyIdentity name="Xceed.Wpf.AvalonDock.Themes.Metro" version="2.5.0.0" publicKeyToken="3E4669D2F30244F4" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>73wF/Ad7WvPWU0UQFfKmg59HJrWs1iMk11SGGFXbscM=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" size="83456">
       <assemblyIdentity name="Xceed.Wpf.AvalonDock.Themes.VS2010" version="2.5.0.0" publicKeyToken="3E4669D2F30244F4" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>4qR6pGGrU/M8Yjj8BHwYcIQKTgSdkO04hVHixdU2lFg=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Xceed.Wpf.DataGrid.dll" size="2266112">
       <assemblyIdentity name="Xceed.Wpf.DataGrid" version="2.5.0.0" publicKeyToken="3E4669D2F30244F4" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>cPB8x+lbvDzGzNDR+IuQfnhemxwdbaHiI7jU7ovlYDo=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Xceed.Wpf.Toolkit.dll" size="1038336">
       <assemblyIdentity name="Xceed.Wpf.Toolkit" version="2.5.0.0" publicKeyToken="3E4669D2F30244F4" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>069nuwFt6QDlBScYAhlIdDRf28UsH7WOqGXIv3ie2lI=</dsig:DigestValue>
+      </hash>
     </dependentAssembly>
   </dependency>
-  <file name="Twitter Archive Eraser.exe.config" size="2206" />
+  <file name="Twitter Archive Eraser.exe.config" size="2206">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>UsWQuBwCqY0BWIMwavN4RNmwNWBzMbrwC5imHL07MDA=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="twitter_alt.ico" size="4286">
     <hash>
       <dsig:Transforms>
