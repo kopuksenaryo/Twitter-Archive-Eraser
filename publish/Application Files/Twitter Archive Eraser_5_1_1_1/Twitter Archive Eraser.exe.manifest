@@ -170,7 +170,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>bO/zaUMxZtrrIG8rIFqGJ1BTwUmbRxgerw8/Nt1oz34=</dsig:DigestValue>
+        <dsig:DigestValue>VEHxwk69TS+U/Nd/0E0CtES2qG2FpGLRI3JI8k4zPO0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -246,15 +246,7 @@
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="Licence.txt" size="16090">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>Kq0+OXb/50kd3fEiZcbIZh+wMLbssc3PFBBlr5+Hy9o=</dsig:DigestValue>
-    </hash>
-  </file>
+  <file name="Licence.txt" size="16090" />
   <file name="Twitter Archive Eraser.exe.config" size="2206" />
   <file name="twitter_alt.ico" size="4286">
     <hash>
