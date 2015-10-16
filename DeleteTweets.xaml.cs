@@ -199,6 +199,7 @@ namespace Twitter_Archive_Eraser
 
         private void Window_Closing_1(object sender, CancelEventArgs e)
         {
+            this.Hide();
             globalCancellationSource.Cancel();
             WebUtils.ReportStats(appSettings.Username,
                                     appSettings.SessionId.ToString(),
