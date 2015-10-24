@@ -33,7 +33,7 @@ namespace Twitter_Archive_Eraser
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Title += " v" + ApplicationSettings.GetApplicationSettings().Version;
+            this.Title += " " + ApplicationSettings.GetApplicationSettings().Version;
         }
 
         IAuthorizer PerformAuthorization()
@@ -109,7 +109,8 @@ namespace Twitter_Archive_Eraser
         {
             e.Handled = true;
             chkAcceptToShare.IsEnabled = false;
-            
+            btnAuthorize.IsEnabled = false;
+
             var auth = PerformAuthorization();
 
             try
@@ -123,6 +124,8 @@ namespace Twitter_Archive_Eraser
                                 + "\n\t- you entered the exact PIN returned by Twitter."
                                 + "\n\n\nTwitter error message: " + ex.Message,
                                 "Twitter Archive Eraser");
+
+                btnAuthorize.IsEnabled = true;
                 return;
             }
 

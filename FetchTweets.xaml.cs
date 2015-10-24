@@ -54,7 +54,7 @@ namespace Twitter_Archive_Eraser
             twitterCtx = settings.Context;
             TweetsEraseType = settings.EraseType;
 
-            Title += " v" + settings.Version;
+            Title += " " + settings.Version;
 
             if(twitterCtx == null)
             {

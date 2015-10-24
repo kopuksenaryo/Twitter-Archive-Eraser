@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using System.Deployment.Application;
 
 namespace Twitter_Archive_Eraser
 {
@@ -202,10 +203,21 @@ namespace Twitter_Archive_Eraser
         {
             get
             {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                if (ApplicationDeployment.IsNetworkDeployed)
+                {
+                    return string.Format("V{0}.{1}.{2}.{3}",
+                                      ApplicationDeployment.CurrentDeployment.CurrentVersion.Major,
+                                      ApplicationDeployment.CurrentDeployment.CurrentVersion.Minor,
+                                      ApplicationDeployment.CurrentDeployment.CurrentVersion.Build,
+                                      ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision);
+                }
+                else // if in debug mode
+                {
+                    Assembly assembly = Assembly.GetExecutingAssembly();
+                    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-                return string.Format("{0}.{1}.{2}", fvi.FileMajorPart, fvi.FileMinorPart, fvi.FileBuildPart);
+                    return string.Format("V{0}.{1}.{2}", fvi.FileMajorPart, fvi.FileMinorPart, fvi.FileBuildPart);
+                }
             }
         }
 
